@@ -2,5 +2,7 @@ package com.destinyEventScheduler.enums;
 
 public enum Status {
 
-	ACTIVE, INACTIVE;
+	STATUS_NEW,
+	STATUS_WAITING,
+	STATUS_VALIDATED;
 }

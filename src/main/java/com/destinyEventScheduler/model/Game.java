@@ -1,39 +1,60 @@
 package com.destinyEventScheduler.model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Status;
 
 @Entity
-@Table(name = "game")
+@Table(name = "game", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_GAME"))
 @SequenceGenerator(name = "GAME_SEQUENCE", sequenceName = "GAME_SEQUENCE", allocationSize = 1, initialValue = 0)
 public class Game {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GAME_SEQUENCE")
 	private Long id;
 
-	@Column(name = "creator", nullable = false)
-	private String creator;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
+	private Member creator;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "event_id", nullable = false, updatable = false)
+	@JoinColumn(name = "event_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
 	private Event event;
+	
+	@Column(name = "time", nullable = false)
+	private LocalDate time;
 
+	@Column(name = "light", nullable = false)
+	@Min(value = 0)
+	private int light;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private Status status;
-
+	
+	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<Entry> entries;
+	
 	public Long getId() {
 		return id;
 	}
@@ -42,11 +63,11 @@ public class Game {
 		this.id = id;
 	}
 
-	public String getCreator() {
+	public Member getCreator() {
 		return creator;
 	}
 
-	public void setCreator(String creator) {
+	public void setCreator(Member creator) {
 		this.creator = creator;
 	}
 
@@ -58,6 +79,14 @@ public class Game {
 		this.event = event;
 	}
 
+	public int getLight() {
+		return light;
+	}
+
+	public void setLight(int light) {
+		this.light = light;
+	}
+
 	public Status getStatus() {
 		return status;
 	}
@@ -66,6 +95,29 @@ public class Game {
 		this.status = status;
 	}
 
+	public LocalDate getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDate time) {
+		this.time = time;
+	}
+	
+	public List<Entry> getEntries() {
+		if(entries == null){
+			entries = new ArrayList<>(); 
+		}
+		return entries;
+	}
+
+	public void setEntries(List<Entry> entries) {
+		this.entries = entries;
+	}
+	
+	public int getInscriptions() {
+		return getEntries().size();
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

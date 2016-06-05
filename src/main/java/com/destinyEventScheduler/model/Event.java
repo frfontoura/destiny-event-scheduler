@@ -2,6 +2,7 @@ package com.destinyEventScheduler.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,11 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
-@Table(name = "event")
+@Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVENT"))
 @SequenceGenerator(name = "EVENT_SEQUENCE", sequenceName = "EVENT_SEQUENCE", allocationSize = 1, initialValue = 0)
 public class Event {
 
@@ -27,9 +29,6 @@ public class Event {
 	@Column(name = "icon", nullable = false)
 	private String icon;
 
-	@Column(name = "type", nullable = false)
-	private String type;
-
 	@Column(name = "min_light", nullable = false)
 	@Min(value = 0)
 	private Integer minLight;
@@ -40,7 +39,7 @@ public class Event {
 	private Integer maxGuardians;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "event_type_id", nullable = false, updatable = false)
+	@JoinColumn(name = "event_type_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_EVENT_EVENT_TYPE_ID"))
 	private EventType eventType;
 	
 	public Long getId() {
@@ -65,14 +64,6 @@ public class Event {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public Integer getMinLight() {

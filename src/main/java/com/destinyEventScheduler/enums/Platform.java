@@ -1,7 +1,12 @@
 package com.destinyEventScheduler.enums;
 
+/**
+ *	1 = Live 
+ *	2 = PSN
+ *
+ */
 public enum Platform {
 
-	PLAYSTATION, XBOX;
+	LIVE, PSN;
 	
 }

@@ -4,14 +4,18 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "entry")
+@Table(name = "entry", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_ENTRY"))
 @SequenceGenerator(name="ENTRY_SEQUENCE", sequenceName="ENTRY_SEQUENCE", allocationSize=1, initialValue=0)
 public class Entry {
 
@@ -19,11 +23,13 @@ public class Entry {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ENTRY_SEQUENCE")
 	private Long id;
 
-	@Column(name = "membership", nullable = false)
-	private String membership;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_MEMBER_ID"))
+	private Member member;
 
-	@Column(name = "game", nullable = false)
-	private String game;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "game_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_GAME_ID"))
+	private Game game;
 
 	@Column(name = "time", nullable = false)
 	private LocalDate time;
@@ -31,24 +37,24 @@ public class Entry {
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public String getMembership() {
-		return membership;
+	
+	public Member getMember() {
+		return member;
 	}
 
-	public void setMembership(String membership) {
-		this.membership = membership;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
-	public String getGame() {
+	public Game getGame() {
 		return game;
 	}
 
-	public void setGame(String game) {
+	public void setGame(Game game) {
 		this.game = game;
 	}
 

@@ -10,9 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "clan")
+@Table(name = "clan", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_CLAN"))
 @SequenceGenerator(name="CLAN_SEQUENCE", sequenceName="CLAN_SEQUENCE", allocationSize=1, initialValue=0)
 public class Clan {
 

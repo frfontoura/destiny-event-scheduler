@@ -1,15 +1,21 @@
 package com.destinyEventScheduler.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "event_type")
+@Table(name = "event_type", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVENT_TYPE"))
 @SequenceGenerator(name = "EVENT_TYPE_SEQUENCE", sequenceName = "EVENT_TYPE_SEQUENCE", allocationSize = 1, initialValue = 0)
 public class EventType {
 
@@ -22,6 +28,9 @@ public class EventType {
 
 	@Column(name = "icon", nullable = false)
 	private String icon;
+	
+	@OneToMany(mappedBy = "eventType", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<Event> events;
 
 	public Long getId() {
 		return id;
@@ -45,6 +54,14 @@ public class EventType {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+	
+	public List<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(List<Event> events) {
+		this.events = events;
 	}
 
 	@Override
