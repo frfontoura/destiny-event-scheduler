@@ -14,9 +14,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "entry", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_ENTRY"))
 @SequenceGenerator(name="ENTRY_SEQUENCE", sequenceName="ENTRY_SEQUENCE", allocationSize=1, initialValue=0)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Entry {
 
 	@Id

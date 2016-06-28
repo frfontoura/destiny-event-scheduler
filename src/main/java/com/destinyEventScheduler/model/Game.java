@@ -1,6 +1,6 @@
 package com.destinyEventScheduler.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +23,21 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "game", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_GAME"))
 @SequenceGenerator(name = "GAME_SEQUENCE", sequenceName = "GAME_SEQUENCE", allocationSize = 1, initialValue = 0)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Game {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GAME_SEQUENCE")
 	private Long id;
 
+	@JsonIgnoreProperties({"clan"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
@@ -42,7 +47,7 @@ public class Game {
 	private Event event;
 	
 	@Column(name = "time", nullable = false)
-	private LocalDate time;
+	private LocalDateTime time;
 
 	@Column(name = "light", nullable = false)
 	@Min(value = 0)
@@ -52,6 +57,7 @@ public class Game {
 	@Column(name = "status", nullable = false)
 	private Status status;
 	
+	@JsonIgnoreProperties(value = {"game"})
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Entry> entries;
 	
@@ -95,11 +101,11 @@ public class Game {
 		this.status = status;
 	}
 
-	public LocalDate getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
 
-	public void setTime(LocalDate time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 	

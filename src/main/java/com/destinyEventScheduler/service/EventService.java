@@ -15,5 +15,9 @@ public class EventService {
 	public Iterable<Event> getEventList(){
 		return eventRepository.findAll();
 	}
+
+	public Event getById(long id) {
+		return eventRepository.findOne(id);
+	}
 	
 }

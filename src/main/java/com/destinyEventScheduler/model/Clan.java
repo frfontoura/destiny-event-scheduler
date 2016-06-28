@@ -4,25 +4,23 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
-@Table(name = "clan", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_CLAN"))
-@SequenceGenerator(name="CLAN_SEQUENCE", sequenceName="CLAN_SEQUENCE", allocationSize=1, initialValue=0)
+@Table(name = "clan", uniqueConstraints = @UniqueConstraint(columnNames = "group_id", name = "PK_CLAN"))
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="groupId")
 public class Clan {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator="CLAN_SEQUENCE")
-	private Long id;
-
-	@Column(name = "bungie_id", nullable = false)
-	private String bungieId;
+	@Column(name = "group_id", nullable = false)
+	private Long groupId;
 	
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -36,23 +34,16 @@ public class Clan {
 	@Column(name = "description", nullable = false)
 	private String description;
 	
+	@JsonIgnoreProperties(value = {"clan"})
 	@OneToMany(mappedBy = "clan")
 	private List<Member> members;
 
-	public Long getId() {
-		return id;
+	public Clan(){
+		
 	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getBungieId() {
-		return bungieId;
-	}
-
-	public void setBungieId(String bungieId) {
-		this.bungieId = bungieId;
+	
+	public Clan(Long groupId) {
+		this.groupId = groupId;
 	}
 
 	public String getName() {
@@ -90,12 +81,24 @@ public class Clan {
 	public List<Member> getMembers() {
 		return members;
 	}
-	
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public void setMembers(List<Member> members) {
+		this.members = members;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
 		return result;
 	}
 
@@ -108,14 +111,12 @@ public class Clan {
 		if (getClass() != obj.getClass())
 			return false;
 		Clan other = (Clan) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (groupId == null) {
+			if (other.groupId != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!groupId.equals(other.groupId))
 			return false;
 		return true;
 	}
 
-	
-	
 }

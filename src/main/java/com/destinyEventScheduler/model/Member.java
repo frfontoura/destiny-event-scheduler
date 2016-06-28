@@ -9,35 +9,36 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Platform;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name = "member", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_MEMBER"))
-@SequenceGenerator(name = "MEMBER_SEQUENCE", sequenceName = "MEMBER_SEQUENCE", allocationSize = 1, initialValue = 0)
+@Table(name = "member", uniqueConstraints = @UniqueConstraint(columnNames = "membership", name = "PK_MEMBER"))
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="membership")
 public class Member {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_SEQUENCE")
-	private Long id;
+	@Column(name = "membership", nullable = false)
+	@JsonIgnore
+	private Long membership;
 
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "membership", nullable = false)
-	private String membership;
-
-	@ManyToOne(optional = false)
+	@JsonIgnoreProperties(value = {"members"})
+	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "clan_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_CLAN_ID"))
 	private Clan clan;
 
@@ -64,26 +65,28 @@ public class Member {
 	@Min(value = 0)
 	private int gamesPlayed;
 	
-	@Column(name = "member_since", nullable = false)
-	private String memberSince;
-	
 	@OneToMany(mappedBy = "memberA", fetch = FetchType.LAZY, cascade =CascadeType.ALL, orphanRemoval = true)
 	private List<Evaluation> evaluationsA;
 	
 	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade =CascadeType.ALL, orphanRemoval = true)
 	private List<Evaluation> evaluationsB;
+
+	public Member(){
+		
+	}
+	
+	public Member(Long membership) {
+		this.membership = membership;
+	}
+
+	@JsonProperty("membership")
+	public String getMembershipJson(){
+		return String.valueOf(membership);
+	}
 	
 	public int getXp(){
 		//TODO CALCULO XP
 		return 0;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -94,11 +97,11 @@ public class Member {
 		this.name = name;
 	}
 
-	public String getMembership() {
+	public Long getMembership() {
 		return membership;
 	}
 
-	public void setMembership(String membership) {
+	public void setMembership(Long membership) {
 		this.membership = membership;
 	}
 
@@ -124,14 +127,6 @@ public class Member {
 
 	public void setPlatform(Platform platform) {
 		this.platform = platform;
-	}
-
-	public String getMemberSince() {
-		return memberSince;
-	}
-
-	public void setMemberSince(String memberSince) {
-		this.memberSince = memberSince;
 	}
 
 	public int getDislikes() {
@@ -181,12 +176,12 @@ public class Member {
 	public void setEvaluationsB(List<Evaluation> evaluationsB) {
 		this.evaluationsB = evaluationsB;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((membership == null) ? 0 : membership.hashCode());
 		return result;
 	}
 
@@ -199,10 +194,10 @@ public class Member {
 		if (getClass() != obj.getClass())
 			return false;
 		Member other = (Member) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (membership == null) {
+			if (other.membership != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!membership.equals(other.membership))
 			return false;
 		return true;
 	}

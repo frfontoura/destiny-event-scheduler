@@ -14,9 +14,14 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVENT"))
 @SequenceGenerator(name = "EVENT_SEQUENCE", sequenceName = "EVENT_SEQUENCE", allocationSize = 1, initialValue = 0)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Event {
 
 	@Id
@@ -38,10 +43,19 @@ public class Event {
 	@Max(value = 6)
 	private Integer maxGuardians;
 
+	@JsonIgnoreProperties(value = {"events"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "event_type_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_EVENT_EVENT_TYPE_ID"))
 	private EventType eventType;
 	
+	public Event(){
+		
+	}
+	
+	public Event(long id) {
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}
