@@ -1,7 +1,11 @@
 package com.destinyEventScheduler.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,4 +25,13 @@ public class MemberController {
 		return memberService.getByMembership(membership);
 	}
 	
+	@RequestMapping(method = RequestMethod.GET)
+	public Member getCurrentMember(@RequestHeader("membership") Long membership){
+		return memberService.getByMembership(membership);
+	}
+	
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	public List<Member> getMembers(@RequestBody List<Long> membersIds){
+		return memberService.getMembersByIds(membersIds);
+	}
 }

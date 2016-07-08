@@ -20,8 +20,8 @@ import javax.validation.constraints.Min;
 import com.destinyEventScheduler.enums.Platform;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -31,13 +31,12 @@ public class Member {
 
 	@Id
 	@Column(name = "membership", nullable = false)
-	@JsonIgnore
 	private Long membership;
 
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@JsonIgnoreProperties(value = {"members"})
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "clan_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_CLAN_ID"))
 	private Clan clan;
@@ -65,10 +64,12 @@ public class Member {
 	@Min(value = 0)
 	private int gamesPlayed;
 	
-	@OneToMany(mappedBy = "memberA", fetch = FetchType.LAZY, cascade =CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	@OneToMany(mappedBy = "memberA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Evaluation> evaluationsA;
 	
-	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade =CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Evaluation> evaluationsB;
 
 	public Member(){
@@ -79,7 +80,7 @@ public class Member {
 		this.membership = membership;
 	}
 
-	@JsonProperty("membership")
+	@JsonProperty(value = "membership", access = Access.READ_ONLY)
 	public String getMembershipJson(){
 		return String.valueOf(membership);
 	}

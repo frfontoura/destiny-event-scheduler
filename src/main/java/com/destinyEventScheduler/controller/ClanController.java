@@ -1,5 +1,7 @@
 package com.destinyEventScheduler.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,11 @@ public class ClanController {
 	@RequestMapping(value = "/{groupId}", method = RequestMethod.GET)
 	public Clan getClan(@PathVariable("groupId") Long groupId){
 		return clanService.getByGroupId(groupId);
+	}
+	
+	@RequestMapping(value = "/{groupId}/members", method = RequestMethod.GET)
+	public List<String> getClanMembers(@PathVariable("groupId") Long groupId){
+		return clanService.getClanMembersByGroupId(groupId);
 	}
 	
 }

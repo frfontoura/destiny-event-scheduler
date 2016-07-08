@@ -1,6 +1,6 @@
 package com.destinyEventScheduler.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class Entry {
 	private Game game;
 
 	@Column(name = "time", nullable = false)
-	private LocalDate time;
+	private LocalDateTime time;
 
 	public Long getId() {
 		return id;
@@ -62,11 +62,11 @@ public class Entry {
 		this.game = game;
 	}
 
-	public LocalDate getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
 
-	public void setTime(LocalDate time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 

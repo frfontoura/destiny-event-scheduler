@@ -24,6 +24,7 @@ import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -37,11 +38,12 @@ public class Game {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GAME_SEQUENCE")
 	private Long id;
 
-	@JsonIgnoreProperties({"clan"})
+	@JsonIgnoreProperties({"clan","name", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
 
+	@JsonIgnoreProperties({"name", "icon", "minLight", "maxGuardians", "eventType"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "event_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
 	private Event event;
@@ -122,6 +124,16 @@ public class Game {
 	
 	public int getInscriptions() {
 		return getEntries().size();
+	}
+	
+	@JsonIgnore
+	public Entry getEntryByMember(Member member){
+		for(Entry entry: getEntries()){
+			if(entry.getMember().equals(member)){
+				return entry;
+			}
+		}
+		return null;
 	}
 	
 	@Override

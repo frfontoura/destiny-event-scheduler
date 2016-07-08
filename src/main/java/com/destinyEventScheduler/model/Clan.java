@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -34,7 +34,7 @@ public class Clan {
 	@Column(name = "description", nullable = false)
 	private String description;
 	
-	@JsonIgnoreProperties(value = {"clan"})
+	@JsonIgnore
 	@OneToMany(mappedBy = "clan")
 	private List<Member> members;
 
