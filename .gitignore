@@ -17,6 +17,3 @@ target/
 
 *.project
 *.classpath
-
-# API-KEY BUNGIE
-bungie.properties

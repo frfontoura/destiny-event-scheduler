@@ -11,7 +11,7 @@ public class BungieApiProperties {
 	@Value("${base_url}")
 	private String baseUrl;
 	
-	@Value("${key}")
+	@Value("${bungie.key}")
 	private String key;
 	
 	@Value("${bungie_account}")
@@ -35,4 +35,5 @@ public class BungieApiProperties {
 	public String getBungieMembersOfClan(){
 		return baseUrl + bungieMembersOfClan;
 	}
+
 }
