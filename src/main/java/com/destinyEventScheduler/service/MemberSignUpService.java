@@ -25,13 +25,15 @@ public class MemberSignUpService {
 	private MemberService memberService;
 	
 	@Transactional
-	public void signup(Long membership, Platform platform) {
+	public Member signup(Long membership, Platform platform) {
 		BungieAccountResponse bungieAccountResponse = bungieApiService.getBungieAccount(membership, platform);
 		BungieAccount bungieAccount = bungieAccountResponse.getBungieAccount();
 		if(bungieAccount != null){
 			Member member = bungieAccountAdapter.convertBungieAccont(bungieAccount);
 			memberService.save(member);
+			return member;
 		}
+		throw new IllegalArgumentException("Member not found");
 	}
 	
 }

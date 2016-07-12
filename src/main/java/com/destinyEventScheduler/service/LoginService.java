@@ -15,12 +15,12 @@ public class LoginService {
 	@Autowired
 	private MemberSignUpService memberSignUpService;
 	
-	public void login(Long membership, Platform platform) {
+	public Member login(Long membership, Platform platform) {
 		Member member = memberService.getByMembership(membership);
-		
 		if(member == null){
-			memberSignUpService.signup(membership, platform);
+			member = memberSignUpService.signup(membership, platform);
 		}
+		return member;
 	}
 
 }
