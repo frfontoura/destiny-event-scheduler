@@ -19,7 +19,7 @@ public class ClanController {
 
 	@Autowired
 	private ClanService clanService;
-
+	
 	@RequestMapping(value = "/{groupId}", method = RequestMethod.GET)
 	public Clan getClan(@PathVariable("groupId") Long groupId){
 		return clanService.getByGroupId(groupId);

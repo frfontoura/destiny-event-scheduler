@@ -1,16 +1,24 @@
 package com.destinyEventScheduler.adapter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.destinyEventScheduler.dto.bungie.account.BungieAccount;
 import com.destinyEventScheduler.dto.bungie.account.ClanBungie;
 import com.destinyEventScheduler.dto.bungie.account.UserInfo;
+import com.destinyEventScheduler.dto.bungie.clan.BungieClan;
 import com.destinyEventScheduler.enums.Platform;
 import com.destinyEventScheduler.model.Clan;
 import com.destinyEventScheduler.model.Member;
+import com.destinyEventScheduler.service.bungie.BungieApiService;
 
 @Service
 public class BungieAccountAdapter {
+	
+	private static final String DEFAULT_ICON = "/img/profile/avatars/Destiny26.jpg";
+	
+	@Autowired
+	private BungieApiService bungieApiService;
 	
 	public Member convertBungieAccont(BungieAccount bungieAccount){
 		Member member = null;
@@ -19,9 +27,14 @@ public class BungieAccountAdapter {
 			member = new Member();
 			member.setName(userInfo.getDisplayName());
 			member.setMembership(userInfo.getMembershipId());
-			member.setIcon(bungieAccount.getBungieNetUser().getProfilePicturePath());
 			member.setPlatform(Platform.parse(userInfo.getMembershipType()));
 			member.setClan(getClan(bungieAccount));
+			
+			if(bungieAccount.getBungieNetUser() != null){
+				member.setIcon(bungieAccount.getBungieNetUser().getProfilePicturePath());
+			} else {
+				member.setIcon(DEFAULT_ICON);
+			}
 		}
 		return member;
 	}
@@ -29,6 +42,12 @@ public class BungieAccountAdapter {
 	private Clan getClan(BungieAccount bungieAccount) {
 		ClanBungie clanBungie = bungieAccount.getRelatedGroups().getClan();
 		Clan clan = null;
+		
+		if(clanBungie == null){
+			BungieClan clanByName = bungieApiService.getClanByName(bungieAccount.getDestinyAccounts()[0].getClanName());
+			clanBungie = clanByName.getResponse().getClanBungie();
+		}
+		
 		if(clanBungie != null){
 			clan = new Clan();
 			clan.setGroupId(clanBungie.getGroupId());

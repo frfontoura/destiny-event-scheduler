@@ -4,7 +4,6 @@ public class UserInfo {
 	
 	private Long membershipId;
 	private String membershipType;
-	private String iconPath;
 	private String displayName;
 
 	public Long getMembershipId() {
@@ -21,14 +20,6 @@ public class UserInfo {
 
 	public void setMembershipType(String membershipType) {
 		this.membershipType = membershipType;
-	}
-
-	public String getIconPath() {
-		return iconPath;
-	}
-
-	public void setIconPath(String iconPath) {
-		this.iconPath = iconPath;
 	}
 
 	public String getDisplayName() {

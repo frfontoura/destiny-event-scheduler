@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.destinyEventScheduler.dto.bungie.account.BungieAccountResponse;
+import com.destinyEventScheduler.dto.bungie.clan.BungieClan;
 import com.destinyEventScheduler.dto.bungie.membersOfClan.MemberBungie;
 import com.destinyEventScheduler.dto.bungie.membersOfClan.MembersOfClanResponse;
 import com.destinyEventScheduler.enums.Platform;
@@ -18,17 +19,22 @@ import com.destinyEventScheduler.enums.Platform;
 @Service
 public class BungieApiService {
 
+	private static final String BASE_URL = "https://www.bungie.net/Platform/";
+	private static final String BUNGIE_ACCOUNT = BASE_URL + "User/GetBungieAccount/:membership/:platform/";
+	private static final String MEMBERS_OF_CLAN = BASE_URL + "Group/:groupId/ClanMembers/?memberType=-1&sort=0&platformType=:platform&currentPage=:page"; 
+	private static final String GROUP_BY_NAME = BASE_URL + "Group/Name/:clanName/";
+	
 	@Autowired
 	private BungieApiProperties bungieApiProperties;
-
+	
 	public BungieAccountResponse getBungieAccount(Long membershipId, Platform platform) {
-		String url = bungieApiProperties.getBungieAccount().replace(":membership", membershipId.toString()).replace(":platform", platform.getValue().toString());
+		String url = BUNGIE_ACCOUNT.replace(":membership", membershipId.toString()).replace(":platform", platform.getValue().toString());
 		return get(url, BungieAccountResponse.class);
 	}
 
 	public List<MemberBungie> getMembersOfClan(String groupId, Platform platform, Integer page){
 		List<MemberBungie> members = null;
-		String url = bungieApiProperties.getBungieMembersOfClan().replace(":groupId", groupId).replace(":platform", platform.getValue().toString()).replace(":page", page.toString());
+		String url = MEMBERS_OF_CLAN.replace(":groupId", groupId).replace(":platform", platform.getValue().toString()).replace(":page", page.toString());
 		MembersOfClanResponse membersOfClanResponse = get(url, MembersOfClanResponse.class);
 		if(membersOfClanResponse != null && membersOfClanResponse.getResponse() != null){
 			members = membersOfClanResponse.getResponse().getMembers();
@@ -37,6 +43,11 @@ public class BungieApiService {
 			}
 		}
 		return members;
+	}
+	
+	public BungieClan getClanByName(String clanName){
+		String url = GROUP_BY_NAME.replace(":clanName", clanName);
+		return get(url, BungieClan.class);
 	}
 	
 	private <T> T get(String url, Class<T> clazz) {
@@ -52,4 +63,5 @@ public class BungieApiService {
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 		return entity;
 	}
+
 }

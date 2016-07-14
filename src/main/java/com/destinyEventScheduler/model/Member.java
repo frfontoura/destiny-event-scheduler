@@ -18,12 +18,9 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Platform;
-import com.destinyEventScheduler.jsonview.MemberView;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -36,49 +33,43 @@ public class Member {
 	@Column(name = "membership", nullable = false)
 	private Long membership;
 
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@JsonIgnoreProperties({"members"})
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "clan_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_CLAN_ID"))
 	private Clan clan;
 
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "icon", nullable = false)
 	private String icon;
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	@Column(name = "platform", nullable = false)
 	private Platform platform;
 
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "likes")
 	@Min(value = 0)
 	private int likes;
 
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "dislikes")
 	@Min(value = 0)
 	private int dislikes;
 
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "games_created")
 	@Min(value = 0)
 	private int gamesCreated;
 	
-	@JsonView({MemberView.MemberBasic.class})
 	@Column(name = "games_played")
 	@Min(value = 0)
 	private int gamesPlayed;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "memberA", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "memberA", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Evaluation> evaluationsA;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Evaluation> evaluationsB;
 
 	public Member(){
@@ -89,21 +80,14 @@ public class Member {
 		this.membership = membership;
 	}
 
-	@JsonView({MemberView.MemberBasic.class})
 	@JsonProperty(value = "membership", access = Access.READ_ONLY)
 	public String getMembershipJson(){
 		return String.valueOf(membership);
 	}
 	
-	@JsonView({MemberView.MemberBasic.class})
 	@JsonProperty(value = "platform", access = Access.READ_ONLY)
 	public Integer getPlatformJson(){
 		return platform.getValue();
-	}
-	
-	public int getXp(){
-		//TODO CALCULO XP
-		return 0;
 	}
 
 	public String getName() {
