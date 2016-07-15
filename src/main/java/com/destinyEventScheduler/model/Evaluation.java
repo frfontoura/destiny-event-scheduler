@@ -14,13 +14,9 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 @Entity
 @Table(name = "evaluation", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVALUATION"))
 @SequenceGenerator(name = "EVALUATION_SEQUENCE", sequenceName = "EVALUATION_SEQUENCE", allocationSize = 1, initialValue = 0)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Evaluation {
 
 	@Id

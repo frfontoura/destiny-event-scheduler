@@ -52,7 +52,7 @@ public class GameService {
 			Entry entry = createEntry(member, game);
 			game.getEntries().add(entry);
 		} else {
-			//TODO exception
+			//TODO exception max jogadores
 		}
 	}
 	
@@ -63,6 +63,11 @@ public class GameService {
 		game.getEntries().remove(entry);
 		entry.setGame(null);
 		gameRepository.save(game);
+	}
+	
+	public List<Entry> getGameEntries(Long gameId) {
+		Game game = getGameById(gameId);
+		return game.getEntries();
 	}
 	
 	private Entry createEntry(Member member, Game game){

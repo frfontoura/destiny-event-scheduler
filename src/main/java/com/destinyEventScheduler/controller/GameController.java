@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
 
@@ -42,6 +43,12 @@ public class GameController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void leaveGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
 		gameService.leaveGame(membership, gameId);
+	}
+	
+	@RequestMapping(value = "/{gameId}/entries", method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	public List<Entry> getGameEntries(@PathVariable("gameId") Long gameId){
+		return gameService.getGameEntries(gameId);
 	}
 	
 }

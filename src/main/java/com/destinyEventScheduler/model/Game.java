@@ -23,31 +23,33 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
 @Table(name = "game", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_GAME"))
 @SequenceGenerator(name = "GAME_SEQUENCE", sequenceName = "GAME_SEQUENCE", allocationSize = 1, initialValue = 0)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Game {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GAME_SEQUENCE")
 	private Long id;
 
-	@JsonIgnoreProperties({"clan","name", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp"})
+	@JsonIgnoreProperties({"clan", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
 
-	@JsonIgnoreProperties({"name", "icon", "minLight", "maxGuardians", "eventType"})
+	@JsonIdentityReference(alwaysAsId = false)
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "event_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
 	private Event event;
 	
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	@Column(name = "time", nullable = false)
 	private LocalDateTime time;
 
@@ -55,13 +57,24 @@ public class Game {
 	@Min(value = 0)
 	private int light;
 	
+	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private Status status;
 	
-	@JsonIgnoreProperties(value = {"game"})
+	@JsonIgnore
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Entry> entries;
+	
+	@JsonGetter("status")
+	public Integer getStatusJson(){
+		return status.getValue();
+	}
+	
+	@JsonSetter("status")
+	public void setStatusJson(Integer value){
+		this.status = Status.parse(value);
+	}
 	
 	public Long getId() {
 		return id;

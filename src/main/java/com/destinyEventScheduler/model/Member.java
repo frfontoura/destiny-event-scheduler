@@ -18,15 +18,14 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Platform;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+//TODO RETIRAR Math.random
 
 @Entity
 @Table(name = "member", uniqueConstraints = @UniqueConstraint(columnNames = "membership", name = "PK_MEMBER"))
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="membership")
 public class Member {
 
 	@Id
@@ -131,6 +130,7 @@ public class Member {
 	}
 
 	public int getDislikes() {
+		dislikes = (int)(Math.random()*100);
 		return dislikes;
 	}
 
@@ -139,6 +139,7 @@ public class Member {
 	}
 
 	public int getGamesCreated() {
+		gamesCreated = (int)(Math.random()*100);
 		return gamesCreated;
 	}
 
@@ -147,6 +148,7 @@ public class Member {
 	}
 
 	public int getGamesPlayed() {
+		gamesPlayed = (int)(Math.random()*100);
 		return gamesPlayed;
 	}
 
@@ -155,6 +157,7 @@ public class Member {
 	}
 	
 	public int getLikes() {
+		likes = (int)(Math.random()*100);
 		return likes;
 	}
 

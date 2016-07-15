@@ -17,9 +17,9 @@ public class LoginService {
 	
 	public Member login(Long membership, Platform platform) {
 		Member member = memberService.getByMembership(membership);
-		//if(member == null){
+		if(member == null){
 			member = memberSignUpService.signup(membership, platform);
-		//}
+		}
 		return member;
 	}
 
