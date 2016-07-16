@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
@@ -24,8 +26,8 @@ public class GameController {
 	private GameService gameService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Game> getNewGames(@RequestHeader("membership") Long membership){
-		return gameService.getNewGames(membership);
+	public List<Game> getGames(@RequestHeader("membership") Long membership,@RequestParam(name ="status", defaultValue = "0", required = false) Integer status){
+		return gameService.getGamesByStatus(membership, Status.parse(status));
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -33,13 +35,13 @@ public class GameController {
 		return gameService.createNewGame(membership, game).getId();
 	}
 	
-	@RequestMapping(value = "/{gameId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{gameId}/join", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void enterGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
-		gameService.enterGame(membership, gameId);
+	public void joinGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
+		gameService.joinGame(membership, gameId);
 	}
 	
-	@RequestMapping(value = "/{gameId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{gameId}/leave", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void leaveGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
 		gameService.leaveGame(membership, gameId);
@@ -49,6 +51,12 @@ public class GameController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public List<Entry> getGameEntries(@PathVariable("gameId") Long gameId){
 		return gameService.getGameEntries(gameId);
+	}
+	
+	@RequestMapping(value = "/{gameId}", method = RequestMethod.DELETE)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void delete(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
+		gameService.delete(membership, gameId);
 	}
 	
 }

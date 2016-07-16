@@ -27,7 +27,7 @@ public class Entry {
 	private Long id;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_MEMBER_ID"))
+	@JoinColumn(name = "membership", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_MEMBER_ID"))
 	private Member member;
 
 	@JsonIgnore

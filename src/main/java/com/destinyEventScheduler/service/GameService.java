@@ -31,28 +31,28 @@ public class GameService {
 	@Transactional
 	public Game createNewGame(Long membership, Game game) {
 		game.setCreator(new Member(membership));
+		game.setStatus(Status.NEW);
 		game.setEntries(Arrays.asList(createEntry(game.getCreator(), game)));
 		return gameRepository.save(game);
 	}
 
-	public List<Game> getNewGames(Long membership) {
+	public List<Game> getGamesByStatus(Long membership, Status status) {
 		Member member = memberService.getByMembership(membership);
 		List<Game> games = null;
 		if(member != null){
-			games = gameRepository.getByCreatorClanAndStatusOrderByTime(member.getClan(), Status.STATUS_NEW);
+			games = gameRepository.getGames(membership, member.getClan().getGroupId(), status);
 		}
 		return games;
 	}
 
 	@Transactional
-	public void enterGame(Long membership, Long gameId) {
+	public void joinGame(Long membership, Long gameId) {
 		Member member = memberService.getByMembership(membership);
 		Game game = getGameById(gameId);
-		if(game.getEntries().size() <= 5){
+		if(game.getEntries().size() <= 5 && !game.hasMemberEntry(member)){
 			Entry entry = createEntry(member, game);
 			game.getEntries().add(entry);
-		} else {
-			//TODO exception max jogadores
+			gameRepository.save(game);
 		}
 	}
 	
@@ -60,9 +60,19 @@ public class GameService {
 	public void leaveGame(Long membership, Long gameId) {
 		Game game = getGameById(gameId);
 		Entry entry = game.getEntryByMember(new Member(membership));
-		game.getEntries().remove(entry);
-		entry.setGame(null);
-		gameRepository.save(game);
+		if(entry != null){
+			game.getEntries().remove(entry);
+			entry.setGame(null);
+			gameRepository.save(game);
+		}
+	}
+	
+	@Transactional
+	public void delete(Long membership, Long gameId) {
+		Game game = getGameById(gameId);
+		if(game.getCreator().equals(new Member(membership))){
+			gameRepository.delete(game);
+		}
 	}
 	
 	public List<Entry> getGameEntries(Long gameId) {
@@ -73,7 +83,7 @@ public class GameService {
 	private Entry createEntry(Member member, Game game){
 		Entry entry = new Entry();
 		entry.setGame(game);
-		entry.setMember(game.getCreator());
+		entry.setMember(member);
 		entry.setTime(LocalDateTime.now());
 		return entry;
 	}

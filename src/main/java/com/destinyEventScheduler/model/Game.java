@@ -41,7 +41,7 @@ public class Game {
 
 	@JsonIgnoreProperties({"clan", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp"})
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "member_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
+	@JoinColumn(name = "membership", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
 
 	@JsonIdentityReference(alwaysAsId = false)
@@ -74,6 +74,26 @@ public class Game {
 	@JsonSetter("status")
 	public void setStatusJson(Integer value){
 		this.status = Status.parse(value);
+	}
+	
+	@JsonIgnore
+	public boolean hasMemberEntry(Member member){
+		for(Entry e: getEntries()){
+			if(e.getMember().equals(member)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@JsonIgnore
+	public Entry getEntryByMember(Member member){
+		for(Entry entry: getEntries()){
+			if(entry.getMember().equals(member)){
+				return entry;
+			}
+		}
+		return null;
 	}
 	
 	public Long getId() {
@@ -138,17 +158,7 @@ public class Game {
 	public int getInscriptions() {
 		return getEntries().size();
 	}
-	
-	@JsonIgnore
-	public Entry getEntryByMember(Member member){
-		for(Entry entry: getEntries()){
-			if(entry.getMember().equals(member)){
-				return entry;
-			}
-		}
-		return null;
-	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

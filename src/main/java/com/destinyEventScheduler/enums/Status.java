@@ -4,9 +4,9 @@ import com.google.common.primitives.Ints;
 
 public enum Status {
 
-	STATUS_NEW(0),
-	STATUS_WAITING(1),
-	STATUS_VALIDATED(2);
+	NEW(0),
+	WAITING(1),
+	VALIDATED(2);
 	
 	private Integer value;
 	

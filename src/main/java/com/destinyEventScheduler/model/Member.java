@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-//TODO RETIRAR Math.random
-
 @Entity
 @Table(name = "member", uniqueConstraints = @UniqueConstraint(columnNames = "membership", name = "PK_MEMBER"))
 public class Member {
@@ -37,7 +35,7 @@ public class Member {
 
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
-	@JoinColumn(name = "clan_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_CLAN_ID"))
+	@JoinColumn(name = "group_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_GROUP_ID"))
 	private Clan clan;
 
 	@Column(name = "icon", nullable = false)
@@ -130,7 +128,6 @@ public class Member {
 	}
 
 	public int getDislikes() {
-		dislikes = (int)(Math.random()*100);
 		return dislikes;
 	}
 
@@ -139,7 +136,6 @@ public class Member {
 	}
 
 	public int getGamesCreated() {
-		gamesCreated = (int)(Math.random()*100);
 		return gamesCreated;
 	}
 
@@ -148,7 +144,6 @@ public class Member {
 	}
 
 	public int getGamesPlayed() {
-		gamesPlayed = (int)(Math.random()*100);
 		return gamesPlayed;
 	}
 
@@ -157,7 +152,6 @@ public class Member {
 	}
 	
 	public int getLikes() {
-		likes = (int)(Math.random()*100);
 		return likes;
 	}
 
