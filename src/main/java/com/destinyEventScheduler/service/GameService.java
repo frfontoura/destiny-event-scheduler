@@ -40,14 +40,14 @@ public class GameService {
 		Member member = memberService.getByMembership(membership);
 		List<Game> games = null;
 		if(member != null){
-			games = gameRepository.getGames(membership, member.getClan().getGroupId(), status);
+			games = gameRepository.getByCreatorClanAndStatusOrderByTime(member.getClan(), status);
 		}
 		return games;
 	}
 
 	@Transactional
 	public void joinGame(Long membership, Long gameId) {
-		Member member = memberService.getByMembership(membership);
+		Member member = new Member(membership);
 		Game game = getGameById(gameId);
 		if(game.getEntries().size() <= 5 && !game.hasMemberEntry(member)){
 			Entry entry = createEntry(member, game);
