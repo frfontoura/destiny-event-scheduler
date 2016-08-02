@@ -26,8 +26,8 @@ public class GameController {
 	private GameService gameService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Game> getGames(@RequestHeader("membership") Long membership,@RequestParam(name ="status", defaultValue = "0", required = false) Integer status){
-		return gameService.getGamesByStatus(membership, Status.parse(status));
+	public List<Game> getGames(@RequestHeader("membership") Long membership, @RequestParam(name ="status", required = false) Integer status, @RequestParam(name ="joined", required = false) Boolean joined){
+		return gameService.getGames(membership, Status.parse(status), joined);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

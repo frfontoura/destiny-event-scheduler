@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
@@ -57,7 +59,6 @@ public class Game {
 	@Min(value = 0)
 	private int light;
 	
-	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private Status status;
@@ -65,6 +66,10 @@ public class Game {
 	@JsonIgnore
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Entry> entries;
+	
+	@JsonProperty("joined")
+	@Transient
+	private boolean memberJoined;
 	
 	@JsonGetter("status")
 	public Integer getStatusJson(){
@@ -159,6 +164,14 @@ public class Game {
 		return getEntries().size();
 	}
 
+	public boolean isMemberJoined() {
+		return memberJoined;
+	}
+
+	public void setMemberJoined(boolean memberRegistered) {
+		this.memberJoined = memberRegistered;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

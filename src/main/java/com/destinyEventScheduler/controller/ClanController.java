@@ -2,6 +2,9 @@ package com.destinyEventScheduler.controller;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,6 +22,10 @@ public class ClanController {
 
 	@Autowired
 	private ClanService clanService;
+	
+	@PersistenceContext
+	private EntityManager em;
+	
 	
 	@RequestMapping(value = "/{groupId}", method = RequestMethod.GET)
 	public Clan getClan(@PathVariable("groupId") Long groupId){

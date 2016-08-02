@@ -20,9 +20,6 @@ public class GameService {
 
 	@Autowired
 	private GameRepository gameRepository;
-
-	@Autowired
-	private MemberService memberService;
 	
 	public Game getGameById(Long gameId){
 		return gameRepository.findOne(gameId);
@@ -36,11 +33,12 @@ public class GameService {
 		return gameRepository.save(game);
 	}
 
-	public List<Game> getGamesByStatus(Long membership, Status status) {
-		Member member = memberService.getByMembership(membership);
+	public List<Game> getGames(Long membership, Status status, Boolean joined) {
+		Member member = new Member(membership);
 		List<Game> games = null;
-		if(member != null){
-			games = gameRepository.getByCreatorClanAndStatusOrderByTime(member.getClan(), status);
+		games = gameRepository.getGames(member, status, joined);
+		if(games != null){
+			games.stream().forEach(g -> g.setMemberJoined(g.hasMemberEntry(member)));
 		}
 		return games;
 	}
