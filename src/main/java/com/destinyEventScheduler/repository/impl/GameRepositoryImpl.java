@@ -22,7 +22,7 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 	@Override
 	public List<Game> getGames(Member member, Status status, Boolean joined) {
 		QGame qGame = QGame.game;
-		return from(qGame).where(GameExpressions.status(status).and(GameExpressions.joined(member, status, joined))).fetch();
+		return from(qGame).where(GameExpressions.status(member, status).and(GameExpressions.joined(member, status, joined))).fetch();
 	}
 
 }

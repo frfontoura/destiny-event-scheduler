@@ -8,13 +8,13 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 
 public abstract class GameExpressions {
 
-	public static BooleanBuilder status(Status status){
+	public static BooleanBuilder status(Member member, Status status){
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		QGame qGame = QGame.game;
 		
 		BooleanExpression statusNew = qGame.status.eq(Status.NEW);
-		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING);
-		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED);
+		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING).and(joined(member, status, Boolean.TRUE));
+		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED).and(joined(member, status, Boolean.TRUE));
 		
 		if (Status.NEW.equals(status)) {
 			booleanBuilder.and(statusNew);
@@ -37,7 +37,7 @@ public abstract class GameExpressions {
 		QGame qGame = QGame.game;
 		BooleanExpression hasMember = qGame.entries.any().member.eq(member);
 		
-		if(Boolean.TRUE.equals(joined) || Status.WAITING.equals(status) || Status.VALIDATED.equals(status)){
+		if(Boolean.TRUE.equals(joined)){
 			booleanBuilder.and(hasMember);
 		} else if(Boolean.FALSE.equals(joined)){
 			booleanBuilder.and(hasMember.not());

@@ -1,5 +1,6 @@
 package com.destinyEventScheduler.controller;
 
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +27,19 @@ public class GameController {
 	private GameService gameService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Game> getGames(@RequestHeader("membership") Long membership, @RequestParam(name ="status", required = false) Integer status, @RequestParam(name ="joined", required = false) Boolean joined){
-		return gameService.getGames(membership, Status.parse(status), joined);
+	public List<Game> getGames(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestParam(name ="status", required = false) Integer status, @RequestParam(name ="joined", required = false) Boolean joined){
+		return gameService.getGames(membership, Status.parse(status), joined, ZoneId.of(zoneId));
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Long createNewGame(@RequestHeader("membership") Long membership, @RequestBody Game game){
-		return gameService.createNewGame(membership, game).getId();
+	public Long createNewGame(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestBody Game game){
+		return gameService.createNewGame(membership, game, ZoneId.of(zoneId)).getId();
 	}
 	
 	@RequestMapping(value = "/{gameId}/join", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void joinGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
-		gameService.joinGame(membership, gameId);
+	public void joinGame(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){
+		gameService.joinGame(membership, gameId, ZoneId.of(zoneId));
 	}
 	
 	@RequestMapping(value = "/{gameId}/leave", method = RequestMethod.DELETE)
@@ -49,14 +50,20 @@ public class GameController {
 	
 	@RequestMapping(value = "/{gameId}/entries", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public List<Entry> getGameEntries(@PathVariable("gameId") Long gameId){
-		return gameService.getGameEntries(gameId);
+	public List<Entry> getGameEntries(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){
+		return gameService.getGameEntries(gameId, ZoneId.of(zoneId));
 	}
 	
 	@RequestMapping(value = "/{gameId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
 		gameService.delete(membership, gameId);
+	}
+	
+	@RequestMapping(value = "/{gameId}/status/{status}", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void updateStatus(@PathVariable("gameId") Long gameId, @PathVariable("status") Integer status){
+		gameService.updateStatus(gameId, Status.parse(status));
 	}
 	
 }

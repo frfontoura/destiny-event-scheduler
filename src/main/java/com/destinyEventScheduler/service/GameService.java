@@ -1,6 +1,6 @@
 package com.destinyEventScheduler.service;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +14,7 @@ import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.repository.GameRepository;
+import com.destinyEventScheduler.utils.DateUtil;
 
 @Service
 public class GameService {
@@ -26,29 +27,33 @@ public class GameService {
 	}
 	
 	@Transactional
-	public Game createNewGame(Long membership, Game game) {
+	public Game createNewGame(Long membership, Game game, ZoneId zoneId) {
 		game.setCreator(new Member(membership));
 		game.setStatus(Status.NEW);
-		game.setEntries(Arrays.asList(createEntry(game.getCreator(), game)));
+		game.setEntries(Arrays.asList(createEntry(game.getCreator(), game, zoneId)));
+		game.setTime(DateUtil.toUTC(game.getTime(), zoneId));
 		return gameRepository.save(game);
 	}
 
-	public List<Game> getGames(Long membership, Status status, Boolean joined) {
+	public List<Game> getGames(Long membership, Status status, Boolean joined, ZoneId zoneId) {
 		Member member = new Member(membership);
 		List<Game> games = null;
 		games = gameRepository.getGames(member, status, joined);
 		if(games != null){
-			games.stream().forEach(g -> g.setMemberJoined(g.hasMemberEntry(member)));
+			games.stream().forEach(g -> {
+				g.setMemberJoined(g.hasMemberEntry(member));
+				g.setTime(DateUtil.fromUTC(g.getTime(), zoneId));
+			});
 		}
 		return games;
 	}
 
 	@Transactional
-	public void joinGame(Long membership, Long gameId) {
+	public void joinGame(Long membership, Long gameId, ZoneId zoneId) {
 		Member member = new Member(membership);
 		Game game = getGameById(gameId);
 		if(game.getEntries().size() <= 5 && !game.hasMemberEntry(member)){
-			Entry entry = createEntry(member, game);
+			Entry entry = createEntry(member, game, zoneId);
 			game.getEntries().add(entry);
 			gameRepository.save(game);
 		}
@@ -72,17 +77,26 @@ public class GameService {
 			gameRepository.delete(game);
 		}
 	}
-	
-	public List<Entry> getGameEntries(Long gameId) {
+
+	@Transactional
+	public void updateStatus(Long gameId, Status status) {
 		Game game = getGameById(gameId);
-		return game.getEntries();
+		game.setStatus(status);
+		gameRepository.save(game);
 	}
 	
-	private Entry createEntry(Member member, Game game){
+	public List<Entry> getGameEntries(Long gameId, ZoneId zoneId) {
+		Game game = getGameById(gameId);
+		List<Entry> entries = game.getEntries();
+		entries.stream().forEach(e -> e.setTime(DateUtil.fromUTC(e.getTime(), zoneId)));
+		return entries;
+	}
+	
+	private Entry createEntry(Member member, Game game, ZoneId zoneId){
 		Entry entry = new Entry();
 		entry.setGame(game);
 		entry.setMember(member);
-		entry.setTime(LocalDateTime.now());
+		entry.setTime(DateUtil.toUTC(game.getTime(), zoneId));
 		return entry;
 	}
 
