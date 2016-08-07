@@ -35,7 +35,9 @@ public class GameService {
 		return gameRepository.save(game);
 	}
 
+	@Transactional
 	public List<Game> getGames(Long membership, Status status, Boolean joined, ZoneId zoneId) {
+		updateGamesStatusWaiting(membership);
 		Member member = new Member(membership);
 		List<Game> games = null;
 		games = gameRepository.getGames(member, status, joined);
@@ -100,4 +102,7 @@ public class GameService {
 		return entry;
 	}
 
+	private void updateGamesStatusWaiting(Long membership) {
+		gameRepository.updateGamesStatusWaiting(membership);
+	}
 }
