@@ -1,6 +1,7 @@
 package com.destinyEventScheduler.service;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,14 +38,14 @@ public class GameService {
 
 	@Transactional
 	public List<Game> getGames(Long membership, Status status, Boolean joined, ZoneId zoneId) {
-		updateGamesStatusWaiting(membership);
+		gameRepository.updateGamesStatusWaiting(membership);
 		Member member = new Member(membership);
 		List<Game> games = null;
 		games = gameRepository.getGames(member, status, joined);
 		if(games != null){
 			games.stream().forEach(g -> {
 				g.setMemberJoined(g.hasMemberEntry(member));
-				g.setTime(DateUtil.fromUTC(g.getTime(), zoneId));
+				g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
 			});
 		}
 		return games;
@@ -79,12 +80,17 @@ public class GameService {
 			gameRepository.delete(game);
 		}
 	}
-
+	
 	@Transactional
-	public void updateStatus(Long gameId, Status status) {
+	public void validateGame(Long gameId, List<Long> memberships) {
 		Game game = getGameById(gameId);
-		game.setStatus(status);
-		gameRepository.save(game);
+		List<Entry> entries = new ArrayList<>(game.getEntries());
+		entries.stream().forEach(e -> {
+			if(!memberships.contains(e.getMember().getMembership())){
+				game.getEntries().remove(e);
+			}
+		});
+		game.setStatus(Status.VALIDATED);
 	}
 	
 	public List<Entry> getGameEntries(Long gameId, ZoneId zoneId) {
@@ -102,7 +108,4 @@ public class GameService {
 		return entry;
 	}
 
-	private void updateGamesStatusWaiting(Long membership) {
-		gameRepository.updateGamesStatusWaiting(membership);
-	}
 }

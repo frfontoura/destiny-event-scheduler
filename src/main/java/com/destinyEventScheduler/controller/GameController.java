@@ -60,10 +60,10 @@ public class GameController {
 		gameService.delete(membership, gameId);
 	}
 	
-	@RequestMapping(value = "/{gameId}/status/{status}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{gameId}/validate", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void updateStatus(@PathVariable("gameId") Long gameId, @PathVariable("status") Integer status){
-		gameService.updateStatus(gameId, Status.parse(status));
+	public void validateGame(@PathVariable("gameId") Long gameId, @RequestBody List<Long> memberships){
+		gameService.validateGame(gameId, memberships);
 	}
 	
 }

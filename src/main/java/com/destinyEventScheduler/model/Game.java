@@ -27,11 +27,11 @@ import javax.validation.constraints.Min;
 import com.destinyEventScheduler.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "game", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_GAME"))
@@ -47,11 +47,11 @@ public class Game {
 	@JoinColumn(name = "membership", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
 
-	@JsonIdentityReference(alwaysAsId = false)
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "event_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
 	private Event event;
 	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	@Column(name = "time", nullable = false)
 	private LocalDateTime time;
@@ -73,6 +73,18 @@ public class Game {
 	@Transient
 	private boolean memberJoined;
 	
+	@JsonProperty(access = Access.READ_ONLY)
+	@Transient
+	private LocalDateTime timeJson;
+
+	public Game(){
+		
+	}
+	
+	public Game(Long gameId) {
+		this.id = gameId;
+	}
+
 	@JsonGetter("status")
 	public Integer getStatusJson(){
 		return status.getValue();
@@ -101,6 +113,15 @@ public class Game {
 			}
 		}
 		return null;
+	}
+	
+	@JsonGetter("time")
+	public LocalDateTime getTimeJson() {
+		return timeJson;
+	}
+
+	public void setTimeJson(LocalDateTime timeJson) {
+		this.timeJson = timeJson;
 	}
 	
 	public Long getId() {

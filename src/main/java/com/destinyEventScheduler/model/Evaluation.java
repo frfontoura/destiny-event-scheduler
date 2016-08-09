@@ -11,12 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
+import com.destinyEventScheduler.enums.Rate;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
 @Table(name = "evaluation", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVALUATION"))
@@ -43,10 +44,18 @@ public class Evaluation {
 	private Member memberB;
 
 	@Column(name = "rate", nullable = false)
-	@Min(value = -1)
-	@Max(value = 1)
-	private int rate;
+	private Rate rate;
 
+	@JsonGetter("rate")
+	public Integer getStatusJson(){
+		return rate.getValue();
+	}
+	
+	@JsonSetter("rate")
+	public void setStatusJson(Integer value){
+		this.rate = Rate.parse(value);
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -79,11 +88,11 @@ public class Evaluation {
 		this.memberB = memberB;
 	}
 	
-	public int getRate() {
+	public Rate getRate() {
 		return rate;
 	}
 
-	public void setRate(int rate) {
+	public void setRate(Rate rate) {
 		this.rate = rate;
 	}
 
@@ -92,7 +101,6 @@ public class Evaluation {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + getRate();
 		return result;
 	}
 
@@ -109,8 +117,6 @@ public class Evaluation {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (getRate() != other.getRate())
 			return false;
 		return true;
 	}
