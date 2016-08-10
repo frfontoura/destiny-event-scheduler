@@ -41,15 +41,17 @@ public class GameService {
 
 	@Transactional
 	public List<Game> getGames(Long membership, Status status, Boolean joined, ZoneId zoneId) {
-		Member member = memberService.getByMembership(membership);
-		gameRepository.updateGamesStatusWaiting(member);
 		List<Game> games = null;
-		games = gameRepository.getGames(member, status, joined);
-		if(games != null){
-			games.stream().forEach(g -> {
-				g.setMemberJoined(g.hasMemberEntry(member));
-				g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
-			});
+		Member member = memberService.getByMembership(membership);
+		if(member != null){
+			gameRepository.updateGamesStatusWaiting(member);
+			games = gameRepository.getGames(member, status, joined);
+			if(games != null){
+				games.stream().forEach(g -> {
+					g.setMemberJoined(g.hasMemberEntry(member));
+					g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
+				});
+			}
 		}
 		return games;
 	}
