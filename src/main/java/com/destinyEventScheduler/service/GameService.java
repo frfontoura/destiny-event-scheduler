@@ -23,6 +23,9 @@ public class GameService {
 	@Autowired
 	private GameRepository gameRepository;
 	
+	@Autowired
+	private MemberService memberService;
+	
 	public Game getGameById(Long gameId){
 		return gameRepository.findOne(gameId);
 	}
@@ -38,8 +41,8 @@ public class GameService {
 
 	@Transactional
 	public List<Game> getGames(Long membership, Status status, Boolean joined, ZoneId zoneId) {
-		gameRepository.updateGamesStatusWaiting(membership);
-		Member member = new Member(membership);
+		Member member = memberService.getByMembership(membership);
+		gameRepository.updateGamesStatusWaiting(member);
 		List<Game> games = null;
 		games = gameRepository.getGames(member, status, joined);
 		if(games != null){

@@ -16,6 +16,7 @@ import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.model.QGame;
 import com.destinyEventScheduler.repository.GameCustomRepository;
 import com.destinyEventScheduler.repository.expressions.GameExpressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 
 @Repository
@@ -31,18 +32,24 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 	@Override
 	public List<Game> getGames(Member member, Status status, Boolean joined) {
 		QGame qGame = QGame.game;
-		return from(qGame).where(GameExpressions.status(member, status).and(GameExpressions.joined(member, status, joined))).fetch();
+		return from(qGame).where(qGame.creator.clan.eq(member.getClan())
+				.and(GameExpressions.status(member, status)
+				.and(GameExpressions.joined(member, status, joined)))).fetch();
 	}
 
 	@Override
-	public void updateGamesStatusWaiting(Long membership) {
+	public void updateGamesStatusWaiting(Member member) {
 		QGame qGame = QGame.game;    
 		new JPAUpdateClause(entityManager, qGame)
-			.where(
-				qGame.creator.membership.eq(membership)
-				.and(qGame.time.lt(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())))
-			.set(qGame.status, Status.WAITING)
-			.execute();
+		.where(qGame.id.in(
+					JPAExpressions.select(qGame.id)
+					.where(qGame.creator.clan.eq(member.getClan())
+							.and(qGame.time.lt(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()))
+						)
+					.from(qGame)
+				))
+		.set(qGame.status, Status.WAITING)
+		.execute();
 	}
 
 }
