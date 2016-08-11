@@ -12,10 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "entry", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_ENTRY"))
@@ -35,10 +39,24 @@ public class Entry {
 	@JoinColumn(name = "game_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_GAME_ID"))
 	private Game game;
 
-	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonIgnore
 	@Column(name = "time", nullable = false)
 	private LocalDateTime time;
 
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+	@JsonProperty(access = Access.READ_ONLY)
+	@Transient
+	private LocalDateTime timeJson;
+	
+	@JsonGetter("time")
+	public LocalDateTime getTimeJson() {
+		return timeJson;
+	}
+
+	public void setTimeJson(LocalDateTime timeJson) {
+		this.timeJson = timeJson;
+	}
+	
 	public Long getId() {
 		return id;
 	}

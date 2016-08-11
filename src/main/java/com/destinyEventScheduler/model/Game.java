@@ -3,6 +3,7 @@ package com.destinyEventScheduler.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,6 +70,11 @@ public class Game {
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Entry> entries;
 	
+	@JsonIgnore
+	@OrderBy("id")
+	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<Evaluation> evaluations;
+	
 	@JsonProperty("joined")
 	@Transient
 	private boolean memberJoined;
@@ -113,6 +119,13 @@ public class Game {
 			}
 		}
 		return null;
+	}
+	
+	@JsonIgnore
+	public List<Evaluation> getEvaluationsByMember(Member member){
+		return evaluations.stream()
+				.filter(e -> e.getMemberA().equals(member))
+				.collect(Collectors.toList());
 	}
 	
 	@JsonGetter("time")
@@ -193,6 +206,17 @@ public class Game {
 
 	public void setMemberJoined(boolean memberRegistered) {
 		this.memberJoined = memberRegistered;
+	}
+	
+	public List<Evaluation> getEvaluations() {
+		if(evaluations == null){
+			evaluations = new ArrayList<>();
+		}
+		return evaluations;
+	}
+
+	public void setEvaluations(List<Evaluation> evaluations) {
+		this.evaluations = evaluations;
 	}
 	
 	@Override

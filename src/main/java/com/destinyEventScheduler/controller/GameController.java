@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.destinyEventScheduler.dto.ValidateDTO;
 import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
+import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
 
@@ -49,7 +51,6 @@ public class GameController {
 	}
 	
 	@RequestMapping(value = "/{gameId}/entries", method = RequestMethod.GET)
-	@ResponseStatus(value = HttpStatus.OK)
 	public List<Entry> getGameEntries(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){
 		return gameService.getGameEntries(gameId, ZoneId.of(zoneId));
 	}
@@ -62,8 +63,13 @@ public class GameController {
 	
 	@RequestMapping(value = "/{gameId}/validate", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void validateGame(@PathVariable("gameId") Long gameId, @RequestBody List<Long> memberships){
-		gameService.validateGame(gameId, memberships);
+	public void validateGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId, @RequestBody ValidateDTO validateDTO){
+		gameService.validateGameAndAddEvaluations(membership, gameId, validateDTO.getEntries(), validateDTO.getEvaluations());
+	}
+	
+	@RequestMapping(value = "/{gameId}/evaluations", method = RequestMethod.GET)
+	public List<Evaluation> getMemberGameEvaluation(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
+		return gameService.getMemberGameEvaluation(membership, gameId);
 	}
 	
 }

@@ -14,6 +14,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.destinyEventScheduler.enums.Rate;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -33,12 +34,12 @@ public class Evaluation {
 	@JoinColumn(name = "game_id", insertable = true, updatable = true)
 	private Game game;
 
-	@JsonIgnoreProperties({"icon","platform", "likes", "dislikes","gamesCreated", "gamesPlayed"})
+	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_a_id", insertable = true, updatable = true, foreignKey=@ForeignKey(name="FK_EVALUATION_MEMBER_A_ID"))
 	private Member memberA;
 
-	@JsonIgnoreProperties({"icon","platform", "likes", "dislikes","gamesCreated", "gamesPlayed"})
+	@JsonIgnoreProperties({"platform", "likes", "dislikes","gamesCreated", "gamesPlayed"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_b_id", insertable = true, updatable = true, foreignKey=@ForeignKey(name="FK_EVALUATION_MEMBER_B_ID"))
 	private Member memberB;

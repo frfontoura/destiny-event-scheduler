@@ -1,6 +1,8 @@
 package com.destinyEventScheduler.service;
 
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
+import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.repository.GameRepository;
@@ -25,6 +28,9 @@ public class GameService {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private EvaluationService evaluationService;
 	
 	public Game getGameById(Long gameId){
 		return gameRepository.findOne(gameId);
@@ -87,30 +93,41 @@ public class GameService {
 	}
 	
 	@Transactional
-	public void validateGame(Long gameId, List<Long> memberships) {
+	public void validateGameAndAddEvaluations(Long membership, Long gameId, List<String> confirmedEntries, List<Evaluation> evaluations) {
 		Game game = getGameById(gameId);
-		List<Entry> entries = new ArrayList<>(game.getEntries());
-		entries.stream().forEach(e -> {
-			if(!memberships.contains(e.getMember().getMembership())){
-				game.getEntries().remove(e);
-			}
-		});
+		validateMembers(confirmedEntries, game);
 		game.setStatus(Status.VALIDATED);
+		gameRepository.save(game);
+		evaluationService.addEvaluations(gameId, membership, evaluations);
 	}
-	
+
 	public List<Entry> getGameEntries(Long gameId, ZoneId zoneId) {
 		Game game = getGameById(gameId);
 		List<Entry> entries = game.getEntries();
-		entries.stream().forEach(e -> e.setTime(DateUtil.fromUTC(e.getTime(), zoneId)));
+		entries.stream().forEach(e -> e.setTimeJson(DateUtil.fromUTC(e.getTime(), zoneId)));
 		return entries;
+	}
+	
+	public List<Evaluation> getMemberGameEvaluation(Long membership, Long gameId) {
+		Game game = getGameById(gameId);
+		return game.getEvaluationsByMember(new Member(membership));
 	}
 	
 	private Entry createEntry(Member member, Game game, ZoneId zoneId){
 		Entry entry = new Entry();
 		entry.setGame(game);
 		entry.setMember(member);
-		entry.setTime(DateUtil.toUTC(game.getTime(), zoneId));
+		entry.setTime(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime());
 		return entry;
+	}
+	
+	private void validateMembers(List<String> confirmedEntries, Game game) {
+		List<Entry> entries = new ArrayList<>(game.getEntries());
+		entries.stream().forEach(e -> {
+			if(!confirmedEntries.contains(e.getMember().getMembership())){
+				game.getEntries().remove(e);
+			}
+		});
 	}
 
 }
