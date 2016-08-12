@@ -13,8 +13,8 @@ public abstract class GameExpressions {
 		QGame qGame = QGame.game;
 		
 		BooleanExpression statusNew = qGame.status.eq(Status.NEW);
-		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING).and(joined(member, status, Boolean.TRUE));
-		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED).and(joined(member, status, Boolean.TRUE));
+		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING);//.and(joined(member, status, Boolean.TRUE));
+		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED);//.and(joined(member, status, Boolean.TRUE));
 		
 		if (Status.NEW.equals(status)) {
 			booleanBuilder.and(statusNew);

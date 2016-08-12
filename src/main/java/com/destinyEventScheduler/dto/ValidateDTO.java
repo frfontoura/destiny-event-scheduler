@@ -6,14 +6,14 @@ import com.destinyEventScheduler.model.Evaluation;
 
 public class ValidateDTO {
 
-	private List<String> entries;
+	private List<Long> entries;
 	private List<Evaluation> evaluations;
 
-	public List<String> getEntries() {
+	public List<Long> getEntries() {
 		return entries;
 	}
 
-	public void setEntries(List<String> memberships) {
+	public void setEntries(List<Long> memberships) {
 		this.entries = memberships;
 	}
 

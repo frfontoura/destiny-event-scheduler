@@ -93,7 +93,7 @@ public class GameService {
 	}
 	
 	@Transactional
-	public void validateGameAndAddEvaluations(Long membership, Long gameId, List<String> confirmedEntries, List<Evaluation> evaluations) {
+	public void validateGameAndAddEvaluations(Long membership, Long gameId, List<Long> confirmedEntries, List<Evaluation> evaluations) {
 		Game game = getGameById(gameId);
 		validateMembers(confirmedEntries, game);
 		game.setStatus(Status.VALIDATED);
@@ -121,7 +121,7 @@ public class GameService {
 		return entry;
 	}
 	
-	private void validateMembers(List<String> confirmedEntries, Game game) {
+	private void validateMembers(List<Long> confirmedEntries, Game game) {
 		List<Entry> entries = new ArrayList<>(game.getEntries());
 		entries.stream().forEach(e -> {
 			if(!confirmedEntries.contains(e.getMember().getMembership())){

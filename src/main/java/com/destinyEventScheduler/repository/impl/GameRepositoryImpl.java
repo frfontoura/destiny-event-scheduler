@@ -45,6 +45,7 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 					JPAExpressions.select(qGame.id)
 					.where(qGame.creator.clan.eq(member.getClan())
 							.and(qGame.time.lt(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()))
+							.and(qGame.status.eq(Status.VALIDATED).not())
 						)
 					.from(qGame)
 				))
