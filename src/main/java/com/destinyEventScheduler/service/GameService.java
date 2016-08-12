@@ -95,10 +95,12 @@ public class GameService {
 	@Transactional
 	public void validateGameAndAddEvaluations(Long membership, Long gameId, List<Long> confirmedEntries, List<Evaluation> evaluations) {
 		Game game = getGameById(gameId);
-		validateMembers(confirmedEntries, game);
-		game.setStatus(Status.VALIDATED);
-		gameRepository.save(game);
-		evaluationService.addEvaluations(gameId, membership, evaluations);
+		if(Status.WAITING.equals(game.getStatus())){
+			validateMembers(confirmedEntries, game);
+			game.setStatus(Status.VALIDATED);
+			gameRepository.save(game);
+			evaluationService.addEvaluations(gameId, membership, evaluations);
+		}
 	}
 
 	public List<Entry> getGameEntries(Long gameId, ZoneId zoneId) {
@@ -111,6 +113,14 @@ public class GameService {
 	public List<Evaluation> getMemberGameEvaluation(Long membership, Long gameId) {
 		Game game = getGameById(gameId);
 		return game.getEvaluationsByMember(new Member(membership));
+	}
+	
+	@Deprecated
+	@Transactional
+	public void updateStatus(Long gameId, Status status) {
+		Game game = getGameById(gameId);
+		game.setStatus(status);
+		gameRepository.save(game);
 	}
 	
 	private Entry createEntry(Member member, Game game, ZoneId zoneId){

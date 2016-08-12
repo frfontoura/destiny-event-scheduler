@@ -72,4 +72,9 @@ public class GameController {
 		return gameService.getMemberGameEvaluation(membership, gameId);
 	}
 	
+	@RequestMapping(value = "/{gameId}/status/{status}", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void updateStatus(@PathVariable("gameId") Long gameId, @PathVariable("status") Integer status){
+		gameService.updateStatus(gameId, Status.parse(status));
+	}
 }
