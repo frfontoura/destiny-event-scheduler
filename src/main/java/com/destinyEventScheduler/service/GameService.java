@@ -138,7 +138,7 @@ public class GameService {
 		entries.stream().forEach(e -> {
 			if(!confirmedEntries.contains(e.getMember().getMembership())){
 				game.getEntries().remove(e);
-			} else {
+			} else if(!e.getMember().equals(game.getCreator())) {
 				e.getMember().setGamesPlayed(e.getMember().getGamesPlayed() + 1);
 			}
 		});
