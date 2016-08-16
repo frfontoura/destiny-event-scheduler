@@ -56,6 +56,7 @@ public class GameService {
 				games.stream().forEach(g -> {
 					g.setMemberJoined(g.hasMemberEntry(member));
 					g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
+					g.setEvaluated(!g.getEvaluationsByMember(new Member(membership)).isEmpty());
 				});
 			}
 		}
@@ -132,10 +133,13 @@ public class GameService {
 	}
 	
 	private void validateMembers(List<Long> confirmedEntries, Game game) {
+		game.getCreator().setGamesCreated(game.getCreator().getGamesCreated() + 1);
 		List<Entry> entries = new ArrayList<>(game.getEntries());
 		entries.stream().forEach(e -> {
 			if(!confirmedEntries.contains(e.getMember().getMembership())){
 				game.getEntries().remove(e);
+			} else {
+				e.getMember().setGamesPlayed(e.getMember().getGamesPlayed() + 1);
 			}
 		});
 	}

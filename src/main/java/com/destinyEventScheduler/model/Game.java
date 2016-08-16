@@ -45,11 +45,11 @@ public class Game {
 
 	@JsonIgnoreProperties({"clan", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp"})
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "membership", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
+	@JoinColumn(name = "membership", nullable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "event_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
+	@JoinColumn(name = "event_id", nullable = false, foreignKey=@ForeignKey(name="FK_GAME_EVENT_ID"))
 	private Event event;
 	
 	@JsonProperty(access = Access.WRITE_ONLY)
@@ -75,9 +75,13 @@ public class Game {
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Evaluation> evaluations;
 	
-	@JsonProperty("joined")
+	@JsonProperty(value = "joined", access = Access.READ_ONLY)
 	@Transient
 	private boolean memberJoined;
+	
+	@JsonProperty(value = "evaluated", access = Access.READ_ONLY)
+	@Transient
+	private boolean evaluated;
 	
 	@JsonProperty(access = Access.READ_ONLY)
 	@Transient
@@ -123,7 +127,7 @@ public class Game {
 	
 	@JsonIgnore
 	public List<Evaluation> getEvaluationsByMember(Member member){
-		return evaluations.stream()
+		return getEvaluations().stream()
 				.filter(e -> e.getMemberA().equals(member))
 				.collect(Collectors.toList());
 	}
@@ -217,6 +221,14 @@ public class Game {
 
 	public void setEvaluations(List<Evaluation> evaluations) {
 		this.evaluations = evaluations;
+	}
+	
+	public boolean isEvaluated() {
+		return evaluated;
+	}
+
+	public void setEvaluated(boolean evaluated) {
+		this.evaluated = evaluated;
 	}
 	
 	@Override
