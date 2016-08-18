@@ -25,13 +25,14 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	private QGame qGame = QGame.game;
+	
 	public GameRepositoryImpl() {
 		super(Game.class);
 	}
 
 	@Override
 	public List<Game> getGames(Member member, Status status, Boolean joined) {
-		QGame qGame = QGame.game;
 		return from(qGame).where(qGame.creator.clan.eq(member.getClan())
 				.and(GameExpressions.status(member, status)
 				.and(GameExpressions.joined(member, status, joined)))).fetch();
@@ -39,7 +40,6 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 
 	@Override
 	public void updateGamesStatusWaiting(Member member) {
-		QGame qGame = QGame.game;    
 		new JPAUpdateClause(entityManager, qGame)
 		.where(qGame.id.in(
 					JPAExpressions.select(qGame.id)

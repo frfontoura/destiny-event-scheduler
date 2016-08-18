@@ -56,7 +56,7 @@ public class GameService {
 				games.stream().forEach(g -> {
 					g.setMemberJoined(g.hasMemberEntry(member));
 					g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
-					g.setEvaluated(!g.getEvaluationsByMember(new Member(membership)).isEmpty());
+					g.setEvaluated(!g.getEvaluationsByMember(member).isEmpty());
 				});
 			}
 		}
@@ -110,12 +110,7 @@ public class GameService {
 		entries.stream().forEach(e -> e.setTimeJson(DateUtil.fromUTC(e.getTime(), zoneId)));
 		return entries;
 	}
-	
-	public List<Evaluation> getMemberGameEvaluation(Long membership, Long gameId) {
-		Game game = getGameById(gameId);
-		return game.getEvaluationsByMember(new Member(membership));
-	}
-	
+
 	@Deprecated
 	@Transactional
 	public void updateStatus(Long gameId, Status status) {

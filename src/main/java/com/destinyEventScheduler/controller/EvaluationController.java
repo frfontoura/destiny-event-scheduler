@@ -12,25 +12,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.destinyEventScheduler.dto.MemberHistoryDTO;
 import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.service.EvaluationService;
 
 @RestController
-@RequestMapping(value = "/evaluations")
+@RequestMapping(value = "/game/{gameId}")
 public class EvaluationController {
 	
 	@Autowired
 	private EvaluationService evaluationService;
 	
-	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/evaluations", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void addEvaluation(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId, @RequestBody List<Evaluation> evaluations){
 		evaluationService.addEvaluations(gameId, membership, evaluations);
 	}
-	
-	@RequestMapping(value = "/game/{gameId}", method = RequestMethod.GET)
-	public List<Evaluation> getByGame(@PathVariable("gameId") Long gameId){
-		return evaluationService.getByGameId(gameId);
-	}
 
+	@RequestMapping(value = "/evaluations", method = RequestMethod.GET)
+	public List<Evaluation> getMemberGameEvaluation(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
+		return evaluationService.getMemberGameEvaluation(membership, gameId);
+	}
+	
+	@RequestMapping(value = "/history", method = RequestMethod.GET)
+	public List<MemberHistoryDTO> getGameHistory(@PathVariable("gameId") Long gameId){
+		return evaluationService.getGameHistory(gameId);
+	}
+	
 }

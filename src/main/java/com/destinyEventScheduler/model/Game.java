@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.google.common.collect.Ordering;
 
 @Entity
 @Table(name = "game", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_GAME"))
@@ -127,9 +128,19 @@ public class Game {
 	
 	@JsonIgnore
 	public List<Evaluation> getEvaluationsByMember(Member member){
-		return getEvaluations().stream()
-				.filter(e -> e.getMemberA().equals(member))
+		Ordering<Evaluation> orderByEntries = Ordering.explicit(getMembershipOrderByEntry()).onResultOf(e -> e.getMemberB().getMembership());
+		List<Evaluation> evaluations = getEvaluations().stream().filter(e -> e.getMemberA().equals(member)).collect(Collectors.toList());
+		return orderByEntries.immutableSortedCopy(evaluations);
+	}
+	
+	@JsonIgnore
+	public List<Long> getMembershipOrderByEntry(){
+		List<Long> membershipOrderByEntryTime = getEntries()
+				.stream()
+				.map(e -> e.getMember().getMembership())
+				.sorted((e1, e2) -> Long.compare(e1, e2))
 				.collect(Collectors.toList());
+		return membershipOrderByEntryTime;
 	}
 	
 	@JsonGetter("time")

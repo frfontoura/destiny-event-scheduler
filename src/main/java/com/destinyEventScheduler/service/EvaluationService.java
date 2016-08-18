@@ -7,10 +7,12 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.destinyEventScheduler.dto.MemberHistoryDTO;
 import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.repository.EvaluationRepository;
+import com.google.common.collect.Ordering;
 
 @Service
 public class EvaluationService {
@@ -20,6 +22,9 @@ public class EvaluationService {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private GameService gameService;
 	
 	@Transactional
 	public void addEvaluations(Long gameId, Long membership, List<Evaluation> evaluations) {
@@ -31,10 +36,18 @@ public class EvaluationService {
 		});
 	}
 
-	public List<Evaluation> getByGameId(Long gameId) {
-		return evaluationRepository.findByGameId(gameId);
+	public List<Evaluation> getMemberGameEvaluation(Long membership, Long gameId) {
+		Game game = gameService.getGameById(gameId);
+		return game.getEvaluationsByMember(new Member(membership));
 	}
 
+	public List<MemberHistoryDTO> getGameHistory(Long gameId) {
+		Game game = gameService.getGameById(gameId);
+		Ordering<MemberHistoryDTO> orderByEntries = Ordering.explicit(game.getMembershipOrderByEntry()).onResultOf(m -> m.getMembership());
+		List<MemberHistoryDTO> gameHistory = evaluationRepository.getGameHistory(gameId);
+		return orderByEntries.immutableSortedCopy(gameHistory);
+	}
+	
 	private void setMemberLikeDislike(Evaluation e) {
 		Member memberB = memberService.getByMembership(e.getMemberB().getMembership());
 		switch (e.getRate()) {
@@ -48,4 +61,5 @@ public class EvaluationService {
 			break;
 		}
 	}
+
 }

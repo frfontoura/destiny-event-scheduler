@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.destinyEventScheduler.dto.ValidateDTO;
 import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
-import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
 
@@ -66,15 +65,11 @@ public class GameController {
 	public void validateGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId, @RequestBody ValidateDTO validateDTO){
 		gameService.validateGameAndAddEvaluations(membership, gameId, validateDTO.getEntries(), validateDTO.getEvaluations());
 	}
-	
-	@RequestMapping(value = "/{gameId}/evaluations", method = RequestMethod.GET)
-	public List<Evaluation> getMemberGameEvaluation(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
-		return gameService.getMemberGameEvaluation(membership, gameId);
-	}
-	
+
 	@RequestMapping(value = "/{gameId}/status/{status}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void updateStatus(@PathVariable("gameId") Long gameId, @PathVariable("status") Integer status){
 		gameService.updateStatus(gameId, Status.parse(status));
 	}
+
 }
