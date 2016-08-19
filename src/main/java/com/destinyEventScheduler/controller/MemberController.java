@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.destinyEventScheduler.dto.MemberProfileDTO;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.service.MemberService;
 
@@ -31,7 +32,12 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public List<Member> getMembers(@RequestBody List<Long> membersIds){
+	public Iterable<Member> getMembers(@RequestBody List<Long> membersIds){
 		return memberService.getMembersByIds(membersIds);
+	}
+	
+	@RequestMapping(value = "/{membership}/profile", method = RequestMethod.GET)
+	public MemberProfileDTO getMemberProfile(@PathVariable("membership") Long membership){
+		return memberService.getMemberProfile(membership);
 	}
 }

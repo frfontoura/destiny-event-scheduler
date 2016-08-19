@@ -1,5 +1,6 @@
 package com.destinyEventScheduler.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -160,6 +161,9 @@ public class Member {
 	}
 	
 	public List<Evaluation> getEvaluationsA() {
+		if(evaluationsA == null){
+			evaluationsA = new ArrayList<>();
+		}
 		return evaluationsA;
 	}
 
@@ -168,6 +172,9 @@ public class Member {
 	}
 	
 	public List<Evaluation> getEvaluationsB() {
+		if(evaluationsB == null){
+			evaluationsB = new ArrayList<>();
+		}
 		return evaluationsB;
 	}
 

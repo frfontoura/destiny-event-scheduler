@@ -1,9 +1,9 @@
 package com.destinyEventScheduler.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.destinyEventScheduler.model.Member;
 
-public interface MemberRepository extends JpaRepository<Member, Long>{
+public interface MemberRepository extends CrudRepository<Member, Long>{
 
 }

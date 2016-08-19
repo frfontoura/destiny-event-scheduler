@@ -137,8 +137,8 @@ public class Game {
 	public List<Long> getMembershipOrderByEntry(){
 		List<Long> membershipOrderByEntryTime = getEntries()
 				.stream()
+				.sorted((e1, e2) -> Long.compare(e1.getId(), e2.getId()))
 				.map(e -> e.getMember().getMembership())
-				.sorted((e1, e2) -> Long.compare(e1, e2))
 				.collect(Collectors.toList());
 		return membershipOrderByEntryTime;
 	}

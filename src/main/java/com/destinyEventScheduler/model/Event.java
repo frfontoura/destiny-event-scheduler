@@ -100,7 +100,7 @@ public class Event {
 	public void setEventType(EventType eventType) {
 		this.eventType = eventType;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

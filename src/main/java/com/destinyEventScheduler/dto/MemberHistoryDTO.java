@@ -8,6 +8,13 @@ public class MemberHistoryDTO {
 	private int totalLikes;
 	private int totalDislikes;
 
+	public MemberHistoryDTO() {
+	}
+	
+	public MemberHistoryDTO(Long membership) {
+		this.membership = membership;
+	}
+
 	public Long getMembership() {
 		return membership;
 	}
@@ -46,5 +53,30 @@ public class MemberHistoryDTO {
 
 	public void setTotalDislikes(int totalDislikes) {
 		this.totalDislikes = totalDislikes;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((membership == null) ? 0 : membership.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MemberHistoryDTO other = (MemberHistoryDTO) obj;
+		if (membership == null) {
+			if (other.membership != null)
+				return false;
+		} else if (!membership.equals(other.membership))
+			return false;
+		return true;
 	}
 }

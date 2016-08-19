@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.destinyEventScheduler.dto.MemberHistoryDTO;
+import com.destinyEventScheduler.factory.MemberHistoryDTOFactory;
+import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
@@ -43,11 +45,12 @@ public class EvaluationService {
 
 	public List<MemberHistoryDTO> getGameHistory(Long gameId) {
 		Game game = gameService.getGameById(gameId);
-		Ordering<MemberHistoryDTO> orderByEntries = Ordering.explicit(game.getMembershipOrderByEntry()).onResultOf(m -> m.getMembership());
 		List<MemberHistoryDTO> gameHistory = evaluationRepository.getGameHistory(gameId);
+		addMembersWithoutEvaluations(game.getEntries(), gameHistory);
+		Ordering<MemberHistoryDTO> orderByEntries = Ordering.explicit(game.getMembershipOrderByEntry()).onResultOf(m -> m.getMembership());
 		return orderByEntries.immutableSortedCopy(gameHistory);
 	}
-	
+
 	private void setMemberLikeDislike(Evaluation e) {
 		Member memberB = memberService.getByMembership(e.getMemberB().getMembership());
 		switch (e.getRate()) {
@@ -60,6 +63,14 @@ public class EvaluationService {
 		default:
 			break;
 		}
+	}
+	
+	private void addMembersWithoutEvaluations(List<Entry> entries, List<MemberHistoryDTO> gameHistory) {
+		entries.forEach(e -> {
+			if(!gameHistory.contains(new MemberHistoryDTO(e.getMember().getMembership()))){
+				gameHistory.add(MemberHistoryDTOFactory.createMemberHistoryDTO(e.getMember()));
+			}
+		});
 	}
 
 }
