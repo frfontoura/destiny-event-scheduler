@@ -2,28 +2,9 @@ package com.destinyEventScheduler.dto;
 
 public class PlayedTypeDTO {
 
-	private Long eventId;
-	private String eventName;
-	private String eventIcon;
 	private Long eventTypeId;
 	private String eventTypeName;
-	private int timesPlayed;
-
-	public Long getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(Long eventId) {
-		this.eventId = eventId;
-	}
-
-	public String getEventName() {
-		return eventName;
-	}
-
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
-	}
+	private Long timesPlayed;
 
 	public Long getEventTypeId() {
 		return eventTypeId;
@@ -41,20 +22,12 @@ public class PlayedTypeDTO {
 		this.eventTypeName = eventTypeName;
 	}
 
-	public int getTimesPlayed() {
+	public Long getTimesPlayed() {
 		return timesPlayed;
 	}
 
-	public void setTimesPlayed(int timesPlayed) {
+	public void setTimesPlayed(Long timesPlayed) {
 		this.timesPlayed = timesPlayed;
-	}
-
-	public String getEventIcon() {
-		return eventIcon;
-	}
-
-	public void setEventIcon(String eventIcon) {
-		this.eventIcon = eventIcon;
 	}
 
 }

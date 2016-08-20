@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.querydsl.core.annotations.QueryInit;
 
 @Entity
 @Table(name = "entry", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_ENTRY"))
@@ -34,6 +35,7 @@ public class Entry {
 	@JoinColumn(name = "membership", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_MEMBER_ID"))
 	private Member member;
 
+	@QueryInit("event.eventType")
 	@JsonIgnore
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "game_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_ENTRY_GAME_ID"))

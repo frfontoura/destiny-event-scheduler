@@ -21,6 +21,9 @@ public class MemberService {
 	@Autowired
 	private EntryRepository entryRepository;
 	
+	@Autowired
+	private EventService eventService;
+	
 	public Member getByMembership(Long membership){
 		return memberRepository.findOne(membership);
 	}
@@ -39,7 +42,8 @@ public class MemberService {
 		MemberProfileDTO memberProfileDTO = new MemberProfileDTO();
 		memberProfileDTO.setMember(member);
 		memberProfileDTO.setEvaluationsMade(member.getEvaluationsA().size());
-		memberProfileDTO.setPlayedTypes(entryRepository.getEventCountByMember(membership));
+		memberProfileDTO.setPlayedTypes(entryRepository.getEventTypeCountByMember(membership));
+		memberProfileDTO.setFavoriteEvent(eventService.getById(entryRepository.getFavoriteEventId(membership)));
 		return memberProfileDTO;
 	}
 	

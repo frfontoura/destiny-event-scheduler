@@ -6,6 +6,7 @@ import com.destinyEventScheduler.dto.PlayedTypeDTO;
 
 public interface EntryCustomRepository {
 
-	public List<PlayedTypeDTO> getEventCountByMember(Long membership);
+	public List<PlayedTypeDTO> getEventTypeCountByMember(Long membership);
+	public Long getFavoriteEventId(Long membership);
 	
 }
