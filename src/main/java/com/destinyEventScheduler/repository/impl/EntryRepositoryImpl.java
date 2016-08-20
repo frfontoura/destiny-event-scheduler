@@ -35,7 +35,7 @@ public class EntryRepositoryImpl extends QueryDslRepositorySupport implements En
 						)
 					)
 				.from(qEntry)
-				.where(qEntry.member.membership.eq(membership))
+				.where(qEntry.member.membership.eq(membership).and(qEntry.game.status.eq(Status.VALIDATED)))
 				.groupBy(qEntry.game.event.eventType.id, qEntry.game.event.eventType.name)
 				.fetch();
 	}
