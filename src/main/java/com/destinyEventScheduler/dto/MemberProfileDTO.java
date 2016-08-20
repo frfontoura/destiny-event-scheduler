@@ -2,7 +2,6 @@ package com.destinyEventScheduler.dto;
 
 import java.util.List;
 
-import com.destinyEventScheduler.model.Event;
 import com.destinyEventScheduler.model.Member;
 
 public class MemberProfileDTO {
@@ -10,7 +9,7 @@ public class MemberProfileDTO {
 	private Member member;
 	private int evaluationsMade;
 	private List<PlayedTypeDTO> playedTypes;
-	private Event favoriteEvent;
+	private FavoriteEventDTO favoriteEvent;
 	
 	public Member getMember() {
 		return member;
@@ -36,11 +35,11 @@ public class MemberProfileDTO {
 		this.playedTypes = playedTypes;
 	}
 
-	public Event getFavoriteEvent() {
+	public FavoriteEventDTO getFavoriteEvent() {
 		return favoriteEvent;
 	}
 
-	public void setFavoriteEvent(Event event) {
+	public void setFavoriteEvent(FavoriteEventDTO event) {
 		this.favoriteEvent = event;
 	}
 

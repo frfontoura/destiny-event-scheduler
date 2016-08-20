@@ -5,9 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.support.QueryDslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import com.destinyEventScheduler.dto.FavoriteEventDTO;
 import com.destinyEventScheduler.dto.PlayedTypeDTO;
+import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Event;
 import com.destinyEventScheduler.model.QEntry;
+import com.destinyEventScheduler.model.QEvent;
+import com.destinyEventScheduler.model.QGame;
 import com.destinyEventScheduler.repository.EntryCustomRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Wildcard;
@@ -37,14 +41,18 @@ public class EntryRepositoryImpl extends QueryDslRepositorySupport implements En
 	}
 	
 	@Override
-	public Long getFavoriteEventId(Long membership){
-		 return getQuerydsl().createQuery()
-				 .select(qEntry.game.event.id)
+	public FavoriteEventDTO getFavoriteEventId(Long membership){
+		QGame qGame = QGame.game;
+		QEvent qEvent = QEvent.event;
+		return getQuerydsl().createQuery()
+				 .select(Projections.bean(FavoriteEventDTO.class, qEvent, qEvent.id.count().as("timesPlayed")))
 				 .from(qEntry)
-				 .where(qEntry.member.membership.eq(membership))
-				 .groupBy(qEntry.game.event.id)
-				 .orderBy(Wildcard.count.desc())
+				 .innerJoin(qEntry.game, qGame)
+				 .innerJoin(qGame.event, qEvent)
+				 .where(qEntry.member.membership.eq(membership).and(qGame.status.eq(Status.VALIDATED)))
+				 .groupBy(qEvent.id)
+				 .orderBy(qEvent.id.count().desc())
 				 .fetchFirst();
 	}
-
+	
 }
