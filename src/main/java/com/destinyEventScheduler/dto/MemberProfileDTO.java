@@ -3,11 +3,9 @@ package com.destinyEventScheduler.dto;
 import java.util.List;
 
 import com.destinyEventScheduler.model.Member;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class MemberProfileDTO {
 
-	@JsonIgnoreProperties({"favoriteEvent"})
 	private Member member;
 	private int evaluationsMade;
 	private List<PlayedTypeDTO> playedTypes;

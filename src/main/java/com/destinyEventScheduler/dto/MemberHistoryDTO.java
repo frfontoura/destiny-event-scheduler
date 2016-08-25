@@ -3,6 +3,7 @@ package com.destinyEventScheduler.dto;
 public class MemberHistoryDTO {
 
 	private Long membership;
+	private Long favoriteEventId;
 	private String name;
 	private String icon;
 	private int totalLikes;
@@ -55,6 +56,14 @@ public class MemberHistoryDTO {
 		this.totalDislikes = totalDislikes;
 	}
 
+	public Long getFavoriteEventId() {
+		return favoriteEventId;
+	}
+
+	public void setFavoriteEventId(Long favoriteEventId) {
+		this.favoriteEventId = favoriteEventId;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

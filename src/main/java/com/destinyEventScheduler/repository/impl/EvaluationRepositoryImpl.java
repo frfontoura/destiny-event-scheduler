@@ -27,13 +27,14 @@ public class EvaluationRepositoryImpl extends QueryDslRepositorySupport implemen
 		return getQuerydsl().createQuery()
 				.select(Projections.bean(MemberHistoryDTO.class, 
 						qEvaluation.memberB.membership, 
+						qEvaluation.memberB.favoriteEvent.id,
 						qEvaluation.memberB.name, 
 						qEvaluation.memberB.icon, 
 						EvaluationExpressions.rate(Rate.LIKE).sum().as("totalLikes"), 
 						EvaluationExpressions.rate(Rate.DISLIKE).sum().as("totalDislikes")))
 				.from(qEvaluation)
 				.where(qEvaluation.game.id.eq(gameId))
-				.groupBy(qEvaluation.memberB.membership, qEvaluation.memberB.name, qEvaluation.memberB.icon)
+				.groupBy(qEvaluation.memberB.membership, qEvaluation.memberB.favoriteEvent.id, qEvaluation.memberB.name, qEvaluation.memberB.icon)
 				.fetch();
 	}
 }
