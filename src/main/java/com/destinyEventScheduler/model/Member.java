@@ -20,6 +20,7 @@ import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Platform;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -69,6 +70,11 @@ public class Member {
 	@JsonIgnore
 	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Evaluation> evaluationsB;
+	
+	@JsonIgnoreProperties({"name", "icon", "minLight", "maxGuardians", "eventType"})
+	@ManyToOne
+	@JoinColumn(name = "event_id", nullable = true, foreignKey=@ForeignKey(name="FK_MEMBER_EVENT_ID"))
+	private Event favoriteEvent;
 
 	public Member(){
 		
@@ -182,6 +188,14 @@ public class Member {
 		this.evaluationsB = evaluationsB;
 	}
 
+	public Event getFavoriteEvent() {
+		return favoriteEvent;
+	}
+
+	public void setFavoriteEvent(Event favoriteEvent) {
+		this.favoriteEvent = favoriteEvent;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

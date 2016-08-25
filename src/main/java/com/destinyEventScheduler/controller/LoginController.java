@@ -21,8 +21,8 @@ public class LoginController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(code = HttpStatus.OK)
-	public Member login(@RequestHeader("membership") Long membership, @RequestHeader("platform") Integer platform){
-		return loginService.login(membership, Platform.parse(platform));
+	public Member login(@RequestHeader("membership") Long membership, @RequestHeader("platform") Integer platform, @RequestHeader("clanId") Long clanId){
+		return loginService.login(membership, Platform.parse(platform), clanId);
 	}
 
 }

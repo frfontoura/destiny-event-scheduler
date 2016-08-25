@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Evaluation;
+import com.destinyEventScheduler.model.Event;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.repository.GameRepository;
@@ -33,6 +34,7 @@ public class GameService {
 	private EvaluationService evaluationService;
 	
 	public Game getGameById(Long gameId){
+		gameRepository.updateGamesStatusWaiting();
 		return gameRepository.findOne(gameId);
 	}
 	
@@ -50,7 +52,7 @@ public class GameService {
 		List<Game> games = null;
 		Member member = memberService.getByMembership(membership);
 		if(member != null){
-			gameRepository.updateGamesStatusWaiting(member);
+			gameRepository.updateGamesStatusWaiting();
 			games = gameRepository.getGames(member, status, joined);
 			if(games != null){
 				games.stream().forEach(g -> {
@@ -101,6 +103,7 @@ public class GameService {
 			game.setStatus(Status.VALIDATED);
 			gameRepository.save(game);
 			evaluationService.addEvaluations(gameId, membership, evaluations);
+			updateMembersFavoriteEvent(game);
 		}
 	}
 
@@ -136,6 +139,16 @@ public class GameService {
 			} else if(!e.getMember().equals(game.getCreator())) {
 				e.getMember().setGamesPlayed(e.getMember().getGamesPlayed() + 1);
 			}
+		});
+	}
+	
+	private void updateMembersFavoriteEvent(Game game) {
+		game.getCreator().setGamesCreated(game.getCreator().getGamesCreated() + 1);
+		List<Entry> entries = new ArrayList<>(game.getEntries());
+		entries.stream().forEach(e -> {
+			Member member = e.getMember();
+			Event favoriteEvent = memberService.getFavoriteEvent(member.getMembership()).getEvent();
+			member.setFavoriteEvent(favoriteEvent);
 		});
 	}
 

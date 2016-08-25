@@ -22,7 +22,7 @@ public class BungieApiService {
 	private static final String BASE_URL = "https://www.bungie.net/Platform/";
 	private static final String BUNGIE_ACCOUNT = BASE_URL + "User/GetBungieAccount/:membership/:platform/";
 	private static final String MEMBERS_OF_CLAN = BASE_URL + "Group/:groupId/ClanMembers/?memberType=-1&sort=0&platformType=:platform&currentPage=:page"; 
-	private static final String GROUP_BY_NAME = BASE_URL + "Group/Name/:clanName/";
+	private static final String GROUP_BY_ID = BASE_URL + "Group/:clanId/";
 	
 	@Autowired
 	private BungieApiProperties bungieApiProperties;
@@ -45,8 +45,8 @@ public class BungieApiService {
 		return members;
 	}
 	
-	public BungieClan getClanByName(String clanName){
-		String url = GROUP_BY_NAME.replace(":clanName", clanName);
+	public BungieClan getClanById(Long clanId){
+		String url = GROUP_BY_ID.replace(":clanId", String.valueOf(clanId));
 		return get(url, BungieClan.class);
 	}
 	

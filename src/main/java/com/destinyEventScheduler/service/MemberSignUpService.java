@@ -25,11 +25,11 @@ public class MemberSignUpService {
 	private MemberService memberService;
 	
 	@Transactional
-	public Member signup(Long membership, Platform platform) {
+	public Member signup(Long membership, Platform platform, Long clanId) {
 		BungieAccountResponse bungieAccountResponse = bungieApiService.getBungieAccount(membership, platform);
 		BungieAccount bungieAccount = bungieAccountResponse.getBungieAccount();
 		if(bungieAccount != null){
-			Member member = bungieAccountAdapter.convertBungieAccont(bungieAccount);
+			Member member = bungieAccountAdapter.convertBungieAccont(bungieAccount, clanId);
 			memberService.save(member);
 			return member;
 		}

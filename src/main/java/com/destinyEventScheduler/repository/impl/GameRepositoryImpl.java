@@ -39,14 +39,11 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 	}
 
 	@Override
-	public void updateGamesStatusWaiting(Member member) {
+	public void updateGamesStatusWaiting() {
 		new JPAUpdateClause(entityManager, qGame)
 		.where(qGame.id.in(
 					JPAExpressions.select(qGame.id)
-					.where(qGame.creator.clan.eq(member.getClan())
-							.and(qGame.time.lt(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()))
-							.and(qGame.status.eq(Status.NEW))
-						)
+					.where(qGame.time.lt(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime()).and(qGame.status.eq(Status.NEW)))
 					.from(qGame)
 				))
 		.set(qGame.status, Status.WAITING)

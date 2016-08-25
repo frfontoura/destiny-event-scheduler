@@ -20,7 +20,7 @@ public class BungieAccountAdapter {
 	@Autowired
 	private BungieApiService bungieApiService;
 	
-	public Member convertBungieAccont(BungieAccount bungieAccount){
+	public Member convertBungieAccont(BungieAccount bungieAccount, Long clanId){
 		Member member = null;
 		if(bungieAccount != null){
 			UserInfo userInfo = bungieAccount.getDestinyAccounts()[0].getUserInfo();
@@ -28,7 +28,7 @@ public class BungieAccountAdapter {
 			member.setName(userInfo.getDisplayName());
 			member.setMembership(userInfo.getMembershipId());
 			member.setPlatform(Platform.parse(userInfo.getMembershipType()));
-			member.setClan(getClan(bungieAccount));
+			member.setClan(getClan(bungieAccount, clanId));
 			
 			if(bungieAccount.getBungieNetUser() != null){
 				member.setIcon(bungieAccount.getBungieNetUser().getProfilePicturePath());
@@ -39,13 +39,13 @@ public class BungieAccountAdapter {
 		return member;
 	}
 
-	private Clan getClan(BungieAccount bungieAccount) {
+	private Clan getClan(BungieAccount bungieAccount, Long clanId) {
 		ClanBungie clanBungie = bungieAccount.getRelatedGroups().getClan();
 		Clan clan = null;
 		
 		if(clanBungie == null){
-			BungieClan clanByName = bungieApiService.getClanByName(bungieAccount.getDestinyAccounts()[0].getClanName());
-			clanBungie = clanByName.getResponse().getClanBungie();
+			BungieClan clanById = bungieApiService.getClanById(clanId);
+			clanBungie = clanById.getResponse().getClanBungie();
 		}
 		
 		if(clanBungie != null){

@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.destinyEventScheduler.dto.FavoriteEventDTO;
 import com.destinyEventScheduler.dto.MemberProfileDTO;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.repository.EntryRepository;
@@ -40,8 +41,12 @@ public class MemberService {
 		memberProfileDTO.setMember(member);
 		memberProfileDTO.setEvaluationsMade(member.getEvaluationsA().size());
 		memberProfileDTO.setPlayedTypes(entryRepository.getEventTypeCountByMember(membership));
-		memberProfileDTO.setFavoriteEvent(entryRepository.getFavoriteEventId(membership));
+		memberProfileDTO.setFavoriteEvent(getFavoriteEvent(membership));
 		return memberProfileDTO;
+	}
+	
+	public FavoriteEventDTO getFavoriteEvent(Long membership){
+		return entryRepository.getFavoriteEventId(membership);
 	}
 	
 }

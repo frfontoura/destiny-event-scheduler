@@ -15,10 +15,10 @@ public class LoginService {
 	@Autowired
 	private MemberSignUpService memberSignUpService;
 	
-	public Member login(Long membership, Platform platform) {
+	public Member login(Long membership, Platform platform, Long clanId) {
 		Member member = memberService.getByMembership(membership);
 		if(member == null){
-			member = memberSignUpService.signup(membership, platform);
+			member = memberSignUpService.signup(membership, platform, clanId);
 		}
 		return member;
 	}
