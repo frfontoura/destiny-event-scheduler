@@ -33,8 +33,8 @@ public class GameService {
 	@Autowired
 	private EvaluationService evaluationService;
 	
+	@Transactional
 	public Game getGameById(Long gameId){
-		gameRepository.updateGamesStatusWaiting();
 		return gameRepository.findOne(gameId);
 	}
 	
