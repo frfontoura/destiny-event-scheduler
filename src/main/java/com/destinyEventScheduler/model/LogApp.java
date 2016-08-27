@@ -11,6 +11,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -31,7 +33,7 @@ public class LogApp {
 	private String exception;
 
 	@JsonProperty("class")
-	@Column(name = "class", nullable = false)
+	@Column(name = "class", nullable = false, length = 1000)
 	private String classException;
 	
 	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
@@ -59,6 +61,9 @@ public class LogApp {
 	}
 
 	public void setException(String exception) {
+		if(exception != null){
+			exception = StringUtils.abbreviate(exception, 1000);
+		}
 		this.exception = exception;
 	}
 

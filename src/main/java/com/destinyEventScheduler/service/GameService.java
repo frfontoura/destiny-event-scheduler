@@ -143,7 +143,6 @@ public class GameService {
 	}
 	
 	private void updateMembersFavoriteEvent(Game game) {
-		game.getCreator().setGamesCreated(game.getCreator().getGamesCreated() + 1);
 		List<Entry> entries = new ArrayList<>(game.getEntries());
 		entries.stream().forEach(e -> {
 			Member member = e.getMember();

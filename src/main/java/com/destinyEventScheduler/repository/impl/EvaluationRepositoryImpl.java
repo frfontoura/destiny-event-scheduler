@@ -27,7 +27,7 @@ public class EvaluationRepositoryImpl extends QueryDslRepositorySupport implemen
 		return getQuerydsl().createQuery()
 				.select(Projections.bean(MemberHistoryDTO.class, 
 						qEvaluation.memberB.membership, 
-						qEvaluation.memberB.favoriteEvent.id,
+						qEvaluation.memberB.favoriteEvent.id.as("favoriteEvent"),
 						qEvaluation.memberB.name, 
 						qEvaluation.memberB.icon, 
 						EvaluationExpressions.rate(Rate.LIKE).sum().as("totalLikes"), 
