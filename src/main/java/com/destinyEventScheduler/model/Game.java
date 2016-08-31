@@ -66,6 +66,9 @@ public class Game {
 	@Column(name = "status", nullable = false)
 	private Status status;
 	
+	@Column(name = "comment", length = 60)
+	private String comment;
+	
 	@JsonIgnore
 	@OrderBy("id")
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -240,6 +243,14 @@ public class Game {
 
 	public void setEvaluated(boolean evaluated) {
 		this.evaluated = evaluated;
+	}
+	
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 	
 	@Override

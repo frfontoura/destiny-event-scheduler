@@ -3,11 +3,9 @@ package com.destinyEventScheduler.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.destinyEventScheduler.model.LogApp;
+import com.destinyEventScheduler.model.Notice;
 
 @Repository
-public interface LogAppRepository extends CrudRepository<LogApp, Long> {
+public interface NoticeRepository extends CrudRepository<Notice, Long> {
 
-	public Iterable<LogApp> findAllByOrderByIdDesc();
-	
 }

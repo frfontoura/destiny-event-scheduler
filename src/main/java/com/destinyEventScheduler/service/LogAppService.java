@@ -25,7 +25,7 @@ public class LogAppService {
 	}
 	
 	public Iterable<LogApp> getLogs(){
-		return logAppRepository.findAll();
+		return logAppRepository.findAllByOrderByIdDesc();
 	}
 	
 }
