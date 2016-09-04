@@ -35,7 +35,7 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 	public List<Game> getGames(Member member, Status status, Boolean joined) {
 		return from(qGame).where(qGame.creator.clan.eq(member.getClan())
 				.and(GameExpressions.status(member, status)
-				.and(GameExpressions.joined(member, status, joined)))).fetch();
+				.and(GameExpressions.joined(member, joined)))).fetch();
 	}
 
 	@Override

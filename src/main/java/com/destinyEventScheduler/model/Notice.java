@@ -57,6 +57,14 @@ public class Notice {
 		this.forceUpdate = forceUpdate;
 	}
 
+	public Long getVersionCode() {
+		return versionCode;
+	}
+
+	public void setVersionCode(Long versionCode) {
+		this.versionCode = versionCode;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -81,4 +89,5 @@ public class Notice {
 			return false;
 		return true;
 	}
+
 }

@@ -13,8 +13,8 @@ public abstract class GameExpressions {
 		QGame qGame = QGame.game;
 		
 		BooleanExpression statusNew = qGame.status.eq(Status.NEW);
-		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING).and(joined(member, status, Boolean.TRUE));
-		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED).and(joined(member, status, Boolean.TRUE));
+		BooleanExpression statusWaintg = qGame.status.eq(Status.WAITING).and(joined(member, Boolean.TRUE));
+		BooleanExpression statusValidated = qGame.status.eq(Status.VALIDATED).and(joined(member, Boolean.TRUE).and(qGame.evaluations.any().memberA.eq(member).not()));
 		
 		if (Status.NEW.equals(status)) {
 			booleanBuilder.and(statusNew);
@@ -32,7 +32,7 @@ public abstract class GameExpressions {
 		return booleanBuilder;
 	}
 	
-	public static BooleanBuilder joined(Member member, Status status, Boolean joined){
+	public static BooleanBuilder joined(Member member, Boolean joined){
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		QGame qGame = QGame.game;
 		BooleanExpression hasMember = qGame.entries.any().member.eq(member);
@@ -45,5 +45,7 @@ public abstract class GameExpressions {
 
 		return booleanBuilder;
 	}
+	
+	
 	
 }
