@@ -16,7 +16,7 @@ public class NoticeController {
 	private NoticeService noticeService;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public Iterable<Notice> getNotices(){
+	public Notice getNotices(){
 		return noticeService.getAll();
 	}
 	

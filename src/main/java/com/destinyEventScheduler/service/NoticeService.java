@@ -12,8 +12,8 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepository;
 	
-	public Iterable<Notice> getAll(){
-		return noticeRepository.findAll();
+	public Notice getAll(){
+		return noticeRepository.findTopByOrderByIdDesc();
 	}
 	
 }
