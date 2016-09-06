@@ -54,17 +54,23 @@ public class GameService {
 		if(member != null){
 			gameRepository.updateGamesStatusWaiting();
 			games = gameRepository.getGames(member, status, joined);
-			if(games != null){
-				games.stream().forEach(g -> {
-					g.setMemberJoined(g.hasMemberEntry(member));
-					g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
-					g.setEvaluated(!g.getEvaluationsByMember(member).isEmpty());
-				});
-			}
+			setGamesInformationsByMember(games, member, zoneId);
 		}
 		return games;
 	}
 
+	@Transactional
+	public List<Game> getGamesHistory(Long membership, ZoneId zoneId) {
+		List<Game> games = null;
+		Member member = memberService.getByMembership(membership);
+		if(member != null){
+			gameRepository.updateGamesStatusWaiting();
+			games = gameRepository.getGamesHistory(member);
+			setGamesInformationsByMember(games, member, zoneId);
+		}
+		return games;
+	}
+	
 	@Transactional
 	public void joinGame(Long membership, Long gameId, ZoneId zoneId) {
 		Member member = new Member(membership);
@@ -151,4 +157,13 @@ public class GameService {
 		});
 	}
 
+	private void setGamesInformationsByMember(List<Game> games, Member member, ZoneId zoneId){
+		if(games != null){
+			games.stream().forEach(g -> {
+				g.setMemberJoined(g.hasMemberEntry(member));
+				g.setTimeJson(DateUtil.fromUTC(g.getTime(), zoneId));
+				g.setEvaluated(!g.getEvaluationsByMember(member).isEmpty());
+			});
+		}
+	}
 }

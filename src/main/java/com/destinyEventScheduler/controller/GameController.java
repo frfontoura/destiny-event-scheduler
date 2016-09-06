@@ -37,6 +37,11 @@ public class GameController {
 		return gameService.createNewGame(membership, game, ZoneId.of(zoneId)).getId();
 	}
 	
+	@RequestMapping(value = "/history", method = RequestMethod.GET)
+	public List<Game> getGamesHistory(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId){
+		return gameService.getGamesHistory(membership, ZoneId.of(zoneId));
+	}
+	
 	@RequestMapping(value = "/{gameId}/join", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void joinGame(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){

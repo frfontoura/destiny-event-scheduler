@@ -9,5 +9,6 @@ import com.destinyEventScheduler.model.Member;
 public interface GameCustomRepository {
 	
 	public List<Game> getGames(Member member, Status status, Boolean joined);
+	public List<Game> getGamesHistory(Member member);
 	public void updateGamesStatusWaiting();
 }

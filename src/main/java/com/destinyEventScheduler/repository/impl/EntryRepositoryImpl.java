@@ -51,7 +51,7 @@ public class EntryRepositoryImpl extends QueryDslRepositorySupport implements En
 				 .innerJoin(qGame.event, qEvent)
 				 .where(qEntry.member.membership.eq(membership).and(qGame.status.eq(Status.VALIDATED)))
 				 .groupBy(qEvent.id)
-				 .orderBy(qEvent.id.count().desc())
+				 .orderBy(qEvent.id.count().desc(), qEvent.id.asc())
 				 .fetchFirst();
 	}
 	

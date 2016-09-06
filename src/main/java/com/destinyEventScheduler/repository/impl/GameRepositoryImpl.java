@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.model.Member;
+import com.destinyEventScheduler.model.QClan;
 import com.destinyEventScheduler.model.QGame;
+import com.destinyEventScheduler.model.QMember;
 import com.destinyEventScheduler.repository.GameCustomRepository;
 import com.destinyEventScheduler.repository.expressions.GameExpressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -48,6 +50,19 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 				))
 		.set(qGame.status, Status.WAITING)
 		.execute();
+	}
+
+	@Override
+	public List<Game> getGamesHistory(Member member) {
+		QMember qMember = QMember.member;
+		QClan qClan = QClan.clan;
+		return from(qGame)
+				.innerJoin(qGame.creator, qMember)
+				.innerJoin(qMember.clan, qClan)
+				.where(qClan.eq(member.getClan())
+						.and(qGame.status.eq(Status.VALIDATED))
+						.and(qGame.evaluations.any().memberA.eq(member)))
+				.fetch();
 	}
 
 }
