@@ -1,5 +1,7 @@
 package com.destinyEventScheduler.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,11 @@ public class NoticeService {
 	
 	public Notice getAll(){
 		return noticeRepository.findTopByOrderByIdDesc();
+	}
+
+	@Transactional
+	public Notice createNewNotice(Notice notice) {
+		return noticeRepository.save(notice);
 	}
 	
 }

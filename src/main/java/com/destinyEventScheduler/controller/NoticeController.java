@@ -1,6 +1,7 @@
 package com.destinyEventScheduler.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,11 @@ public class NoticeController {
 	@RequestMapping(method = RequestMethod.GET)
 	public Notice getNotices(){
 		return noticeService.getAll();
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public Long createNewNotice(@RequestBody Notice notice){
+		return noticeService.createNewNotice(notice).getId();
 	}
 	
 }
