@@ -40,6 +40,15 @@ public class LogApp {
 	@Column(name = "time", nullable = false)
 	private LocalDateTime time;
 	
+	@Column(name = "device_name", length = 50)
+	private String deviceName;
+	
+	@Column(name = "api_number")
+	private int apiNumber;
+	
+	@Column(name = "version_code")
+	private int versionCode;
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,6 +90,30 @@ public class LogApp {
 
 	public void setClassException(String classException) {
 		this.classException = classException;
+	}
+	
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	public int getApiNumber() {
+		return apiNumber;
+	}
+
+	public void setApiNumber(int apiNumber) {
+		this.apiNumber = apiNumber;
+	}
+
+	public int getVersionCode() {
+		return versionCode;
+	}
+
+	public void setVersionCode(int versionCode) {
+		this.versionCode = versionCode;
 	}
 	
 	@Override
