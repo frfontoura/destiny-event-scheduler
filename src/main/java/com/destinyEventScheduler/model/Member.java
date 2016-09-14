@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import com.destinyEventScheduler.enums.Platform;
+import com.destinyEventScheduler.utils.ResourceBundleUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,6 +28,12 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 @Entity
 @Table(name = "member", uniqueConstraints = @UniqueConstraint(columnNames = "membership", name = "PK_MEMBER"))
 public class Member {
+
+	private static final int LIKE_MODIFIER = 16;
+	private static final int CREATOR_MODIFIER = 64;
+	private static final int PLAYED_MODIFIER = 48;
+	private static final int DISLIKE_MODIFIER = 16;
+	private static final int EXP_CONSTANT = 8;
 
 	@Id
 	@Column(name = "membership", nullable = false)
@@ -196,6 +203,38 @@ public class Member {
 		this.favoriteEvent = favoriteEvent;
 	}
 	
+	@JsonIgnore
+	public int getMemberXP() {
+		int likesFator = (likes * LIKE_MODIFIER);
+		int createdFator = (gamesCreated * CREATOR_MODIFIER);
+		int playedFator = (gamesPlayed * PLAYED_MODIFIER);
+		int dislikeFator = (dislikes * DISLIKE_MODIFIER);
+		int result = (likesFator + createdFator + playedFator) - dislikeFator;
+		return result;
+	}
+	
+    public String[] getMemberTitle(){
+        if (favoriteEvent == null){
+            return null;
+        } 
+        String[] titles = new String[3];
+        String memberLevelKey = "member.title.level." + getLevelTitle();
+        String eventKey = "member.title.event." + favoriteEvent.getName();
+        titles[0] = ResourceBundleUtils.getStringEn(eventKey, ResourceBundleUtils.getStringEn(memberLevelKey));
+        titles[1] = ResourceBundleUtils.getStringPt(eventKey, ResourceBundleUtils.getStringPt(memberLevelKey));
+        titles[2] = ResourceBundleUtils.getStringEs(eventKey, ResourceBundleUtils.getStringEs(memberLevelKey));
+        return titles;
+    }
+    
+    @JsonIgnore
+    public int getMemberLevel(int exp){
+        double lvl = Math.sqrt(exp/EXP_CONSTANT);
+        int inteiro = (int) lvl;
+        double resto = lvl - inteiro;
+        if (resto>0) inteiro++;
+        return inteiro;
+    }
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -219,6 +258,31 @@ public class Member {
 		} else if (!membership.equals(other.membership))
 			return false;
 		return true;
+	}
+	
+	private int getLevelTitle() {
+		int lvl = getMemberLevel(getMemberXP());
+		if (lvl <= 10) {
+			return 1;
+		} else if (lvl <= 20) {
+			return 2;
+		} else if (lvl <= 30) {
+			return 3;
+		} else if (lvl <= 40) {
+			return 4;
+		} else if (lvl <= 50) {
+			return 5;
+		} else if (lvl <= 60) {
+			return 6;
+		} else if (lvl <= 70) {
+			return 7;
+		} else if (lvl <= 80) {
+			return 8;
+		} else if (lvl <= 90) {
+			return 9;
+		} else {
+			return 1;
+		}
 	}
 
 }

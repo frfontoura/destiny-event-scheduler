@@ -14,7 +14,9 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "event", uniqueConstraints = @UniqueConstraint(columnNames = "ID", name = "PK_EVENT"))
@@ -25,8 +27,21 @@ public class Event {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EVENT_SEQUENCE")
 	private Long id;
 
+	@JsonIgnore
 	@Column(name = "name", nullable = false)
 	private String name;
+	
+	@JsonProperty("en")
+	@Column(name = "name_en")
+	private String nameEn;
+	
+	@JsonProperty("pt")
+	@Column(name = "name_pt", nullable = false)
+	private String namePt;
+	
+	@JsonProperty("es")
+	@Column(name = "name_es", nullable = false)
+	private String nameEs;
 
 	@Column(name = "icon", nullable = false)
 	private String icon;
@@ -101,6 +116,30 @@ public class Event {
 		this.eventType = eventType;
 	}
 
+	public String getNamePt() {
+		return namePt;
+	}
+
+	public void setNamePt(String namePt) {
+		this.namePt = namePt;
+	}
+
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+	
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
