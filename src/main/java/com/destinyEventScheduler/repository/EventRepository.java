@@ -6,4 +6,6 @@ import com.destinyEventScheduler.model.Event;
 
 public interface EventRepository extends CrudRepository<Event, Long> {
 
+	public Iterable<Event> findByIdGreaterThanOrderById(Long initialId);
+	
 }

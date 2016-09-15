@@ -1,7 +1,9 @@
 package com.destinyEventScheduler.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +23,6 @@ import javax.validation.constraints.Min;
 import com.destinyEventScheduler.enums.Platform;
 import com.destinyEventScheduler.utils.ResourceBundleUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -78,7 +79,7 @@ public class Member {
 	@OneToMany(mappedBy = "memberB", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Evaluation> evaluationsB;
 	
-	@JsonIgnoreProperties({"name", "icon", "minLight", "maxGuardians", "eventType"})
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "event_id", nullable = true, foreignKey=@ForeignKey(name="FK_MEMBER_EVENT_ID"))
 	private Event favoriteEvent;
@@ -202,38 +203,30 @@ public class Member {
 	public void setFavoriteEvent(Event favoriteEvent) {
 		this.favoriteEvent = favoriteEvent;
 	}
-	
-	@JsonIgnore
-	public int getMemberXP() {
-		int likesFator = (likes * LIKE_MODIFIER);
-		int createdFator = (gamesCreated * CREATOR_MODIFIER);
-		int playedFator = (gamesPlayed * PLAYED_MODIFIER);
-		int dislikeFator = (dislikes * DISLIKE_MODIFIER);
-		int result = (likesFator + createdFator + playedFator) - dislikeFator;
-		return result;
-	}
-	
-    public String[] getMemberTitle(){
+
+    public Map<String, String> getMemberTitle(){
         if (favoriteEvent == null){
             return null;
         } 
-        String[] titles = new String[3];
+        Map<String, String> titles = new HashMap<>();
         String memberLevelKey = "member.title.level." + getLevelTitle();
         String eventKey = "member.title.event." + favoriteEvent.getName();
-        titles[0] = ResourceBundleUtils.getStringEn(eventKey, ResourceBundleUtils.getStringEn(memberLevelKey));
-        titles[1] = ResourceBundleUtils.getStringPt(eventKey, ResourceBundleUtils.getStringPt(memberLevelKey));
-        titles[2] = ResourceBundleUtils.getStringEs(eventKey, ResourceBundleUtils.getStringEs(memberLevelKey));
+        titles.put("en", ResourceBundleUtils.getStringEn(eventKey, ResourceBundleUtils.getStringEn(memberLevelKey)));
+        titles.put("pt", ResourceBundleUtils.getStringPt(eventKey, ResourceBundleUtils.getStringPt(memberLevelKey)));
+        titles.put("es", ResourceBundleUtils.getStringEs(eventKey, ResourceBundleUtils.getStringEs(memberLevelKey)));
         return titles;
     }
     
     @JsonIgnore
-    public int getMemberLevel(int exp){
-        double lvl = Math.sqrt(exp/EXP_CONSTANT);
-        int inteiro = (int) lvl;
-        double resto = lvl - inteiro;
-        if (resto>0) inteiro++;
-        return inteiro;
-    }
+	public int getMemberLevel(int exp) {
+		double lvl = Math.sqrt(exp / EXP_CONSTANT);
+		int inteiro = (int) lvl;
+		double resto = lvl - inteiro;
+		if (resto > 0){
+			inteiro++;
+		}
+		return inteiro;
+	}
 
 	@Override
 	public int hashCode() {
@@ -258,6 +251,15 @@ public class Member {
 		} else if (!membership.equals(other.membership))
 			return false;
 		return true;
+	}
+	
+	private int getMemberXP() {
+		int likesFator = (likes * LIKE_MODIFIER);
+		int createdFator = (gamesCreated * CREATOR_MODIFIER);
+		int playedFator = (gamesPlayed * PLAYED_MODIFIER);
+		int dislikeFator = (dislikes * DISLIKE_MODIFIER);
+		int result = (likesFator + createdFator + playedFator) - dislikeFator;
+		return result;
 	}
 	
 	private int getLevelTitle() {

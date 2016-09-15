@@ -1,13 +1,15 @@
 package com.destinyEventScheduler.dto;
 
+import java.util.Map;
+
 public class MemberHistoryDTO {
 
 	private Long membership;
-	private Long favoriteEvent;
 	private String name;
 	private String icon;
 	private int totalLikes;
 	private int totalDislikes;
+	private Map<String, String> memberTitle;
 
 	public MemberHistoryDTO() {
 	}
@@ -55,14 +57,6 @@ public class MemberHistoryDTO {
 	public void setTotalDislikes(int totalDislikes) {
 		this.totalDislikes = totalDislikes;
 	}
-
-	public Long getFavoriteEvent() {
-		return favoriteEvent;
-	}
-
-	public void setFavoriteEvent(Long favoriteEventId) {
-		this.favoriteEvent = favoriteEventId;
-	}
 	
 	@Override
 	public int hashCode() {
@@ -87,5 +81,13 @@ public class MemberHistoryDTO {
 		} else if (!membership.equals(other.membership))
 			return false;
 		return true;
+	}
+
+	public Map<String, String> getMemberTitle() {
+		return memberTitle;
+	}
+
+	public void setMemberTitle(Map<String, String> memberTitle) {
+		this.memberTitle = memberTitle;
 	}
 }

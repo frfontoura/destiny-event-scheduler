@@ -10,9 +10,9 @@ public abstract class MemberHistoryDTOFactory {
 		memberHistoryDTO.setMembership(member.getMembership());
 		memberHistoryDTO.setName(member.getName());
 		memberHistoryDTO.setIcon(member.getIcon());
-		memberHistoryDTO.setFavoriteEvent(member.getFavoriteEvent() != null ? member.getFavoriteEvent().getId() : null);
 		memberHistoryDTO.setTotalLikes(0);
 		memberHistoryDTO.setTotalDislikes(0);
+		memberHistoryDTO.setMemberTitle(member.getMemberTitle());
 		return memberHistoryDTO;
 	}
 	

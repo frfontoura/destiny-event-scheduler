@@ -12,8 +12,8 @@ public class EventService {
 	@Autowired
 	private EventRepository eventRepository;
 	
-	public Iterable<Event> getEventList(){
-		return eventRepository.findAll();
+	public Iterable<Event> getEventGreaterThanList(Long initialId){
+		return eventRepository.findByIdGreaterThanOrderById(initialId);
 	}
 
 	public Event getById(long id) {
