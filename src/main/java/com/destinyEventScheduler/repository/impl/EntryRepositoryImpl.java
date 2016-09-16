@@ -31,12 +31,15 @@ public class EntryRepositoryImpl extends QueryDslRepositorySupport implements En
 				.select(Projections.bean(PlayedTypeDTO.class, 
 						qEntry.game.event.eventType.id.as("eventTypeId"),
 						qEntry.game.event.eventType.name.as("eventTypeName"),
+						qEntry.game.event.eventType.nameEn.as("eventTypeNameEn"),
+						qEntry.game.event.eventType.namePt.as("eventTypeNamePt"),
+						qEntry.game.event.eventType.nameEs.as("eventTypeNameEs"),
 						Wildcard.count.as("timesPlayed")
 						)
 					)
 				.from(qEntry)
 				.where(qEntry.member.membership.eq(membership).and(qEntry.game.status.eq(Status.VALIDATED)))
-				.groupBy(qEntry.game.event.eventType.id, qEntry.game.event.eventType.name)
+				.groupBy(qEntry.game.event.eventType.id, qEntry.game.event.eventType.name, qEntry.game.event.eventType.nameEn, qEntry.game.event.eventType.namePt, qEntry.game.event.eventType.nameEs)
 				.fetch();
 	}
 	
