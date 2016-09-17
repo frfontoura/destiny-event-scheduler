@@ -44,7 +44,7 @@ public class Game {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GAME_SEQUENCE")
 	private Long id;
 
-	@JsonIgnoreProperties({"clan", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "xp", "favoriteEvent", "memberTitle"})
+	@JsonIgnoreProperties({"clan", "icon", "platform", "likes", "dislikes", "gamesCreated", "gamesPlayed", "memberTitle"})
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "membership", nullable = false, foreignKey=@ForeignKey(name="FK_GAME_MEMBER_ID"))
 	private Member creator;

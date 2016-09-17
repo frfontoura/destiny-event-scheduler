@@ -47,6 +47,7 @@ public class EvaluationService {
 		Game game = gameService.getGameById(gameId);
 		List<MemberHistoryDTO> gameHistory = evaluationRepository.getGameHistory(gameId);
 		addMembersWithoutEvaluations(game.getEntries(), gameHistory);
+		setMemberTitles(game.getEntries(), gameHistory);
 		Ordering<MemberHistoryDTO> orderByEntries = Ordering.explicit(game.getMembershipOrderByEntry()).onResultOf(m -> m.getMembership());
 		return orderByEntries.immutableSortedCopy(gameHistory);
 	}
@@ -73,4 +74,11 @@ public class EvaluationService {
 		});
 	}
 
+	private void setMemberTitles(List<Entry> entries, List<MemberHistoryDTO> gameHistory) {
+		entries.forEach(e -> {
+			Long membership = e.getMember().getMembership();
+			int indexOf = gameHistory.indexOf(new MemberHistoryDTO(membership));
+			gameHistory.get(indexOf).setMemberTitle(e.getMember().getMemberTitle());
+		});
+	}
 }
