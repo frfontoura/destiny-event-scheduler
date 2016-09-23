@@ -14,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -43,6 +45,10 @@ public class Member {
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@JsonIgnore
+	@Column(name = "password", nullable = false) 
+	private String password;
+	
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "group_id", nullable = false, updatable = false, foreignKey=@ForeignKey(name="FK_MEMBER_GROUP_ID"))
@@ -84,6 +90,13 @@ public class Member {
 	@JoinColumn(name = "event_id", nullable = true, foreignKey=@ForeignKey(name="FK_MEMBER_EVENT_ID"))
 	private Event favoriteEvent;
 
+	@JsonIgnore
+	@JoinTable(name = "MEMBER_ROLES", joinColumns = {
+	        @JoinColumn(name = "MEMBER_ID", referencedColumnName = "MEMBERSHIP", nullable = false)}, inverseJoinColumns = {
+			@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID", nullable = false)})
+	@ManyToMany
+	private List<Role> roles;
+	
 	public Member(){
 		
 	}
@@ -204,6 +217,22 @@ public class Member {
 		this.favoriteEvent = favoriteEvent;
 	}
 
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
     public Map<String, String> getMemberTitle(){
         if (favoriteEvent == null){
             return null;

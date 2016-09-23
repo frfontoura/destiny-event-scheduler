@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.destinyEventScheduler.model.Clan;
 import com.destinyEventScheduler.service.ClanService;
 
 @RestController
-@RequestMapping(value = "/clan")
+@RequestMapping(value = "/api/clan")
 public class ClanController {
 
 	@Autowired

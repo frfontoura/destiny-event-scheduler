@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +10,7 @@ import com.destinyEventScheduler.model.Event;
 import com.destinyEventScheduler.service.EventService;
 
 @RestController
-@RequestMapping(value = "/events")
+@RequestMapping(value = "/api/events")
 public class EventController {
 
 	@Autowired

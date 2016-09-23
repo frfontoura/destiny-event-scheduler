@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import com.destinyEventScheduler.model.LogApp;
 import com.destinyEventScheduler.service.LogAppService;
 
 @RestController
-@RequestMapping(value = "/log-app")
+@RequestMapping(value = "/api/log-app")
 public class LogAppController {
 
 	@Autowired

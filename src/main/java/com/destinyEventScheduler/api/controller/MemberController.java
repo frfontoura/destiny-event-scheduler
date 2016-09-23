@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.service.MemberService;
 
 @RestController
-@RequestMapping(value = "/member")
+@RequestMapping(value = "/api/member")
 public class MemberController {
 
 	@Autowired

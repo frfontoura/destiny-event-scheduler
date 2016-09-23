@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.destinyEventScheduler.model.Evaluation;
 import com.destinyEventScheduler.service.EvaluationService;
 
 @RestController
-@RequestMapping(value = "/game/{gameId}")
+@RequestMapping(value = "/api/game/{gameId}")
 public class EvaluationController {
 	
 	@Autowired

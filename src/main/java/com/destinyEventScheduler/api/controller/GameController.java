@@ -1,4 +1,4 @@
-package com.destinyEventScheduler.controller;
+package com.destinyEventScheduler.api.controller;
 
 import java.time.ZoneId;
 import java.util.List;
@@ -21,7 +21,7 @@ import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
 
 @RestController
-@RequestMapping(value = "/game")
+@RequestMapping(value = "/api/game")
 public class GameController {
 
 	@Autowired
