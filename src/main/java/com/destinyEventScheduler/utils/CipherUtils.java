@@ -31,7 +31,7 @@ public class CipherUtils {
 			key = Arrays.copyOf(key, 16);
 
 			aesKey = new SecretKeySpec(key, "AES");
-			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher = Cipher.getInstance("AES");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("CipherUtils init", e);
