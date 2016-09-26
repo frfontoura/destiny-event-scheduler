@@ -19,7 +19,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class TokenAuthenticationService {
 
-	private long EXPIRATION_TIME = 1000 * 60 * 15;
+	private long EXPIRATION_TIME = 1000 * 60 * 5;
 	private String headerString = "Authorization";
 
 	@Autowired
