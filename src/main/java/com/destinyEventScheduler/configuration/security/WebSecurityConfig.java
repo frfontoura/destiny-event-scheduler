@@ -3,12 +3,16 @@ package com.destinyEventScheduler.configuration.security;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.destinyEventScheduler.configuration.security.jwt.DestinySchedulerLoginFilter;
@@ -18,6 +22,7 @@ import com.destinyEventScheduler.configuration.security.jwt.TokenAuthenticationS
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public static final String LOGIN_PATH = "/login";
@@ -36,9 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.headers().cacheControl();
 
 		http.csrf().disable() 
-			.authorizeRequests().antMatchers("/")
-			.permitAll().antMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
-			.anyRequest().authenticated().and()
+			.authorizeRequests()
+			.antMatchers("/").permitAll()
+			.antMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
+			.antMatchers("/api/**").authenticated().and()
 			.addFilterBefore(dsLoginFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JWTLoginFilter(LOGIN_PATH, authenticationManager(), tokenAuthenticationService),	UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JWTAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class);
@@ -49,9 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.jdbcAuthentication()
 			.dataSource(dataSource)
 			.usersByUsernameQuery(getUserQuery())
-			.authoritiesByUsernameQuery(getAuthoritiesQuery());
+			.authoritiesByUsernameQuery(getAuthoritiesQuery())
+			.passwordEncoder(passwordEncoder());
 	}
 
+	@Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+	
 	private String getUserQuery() {
 		return "SELECT CAST(membership as character varying) as username, password as password, 1 as enabled FROM member WHERE CAST(membership as character varying) = ?";
 	}

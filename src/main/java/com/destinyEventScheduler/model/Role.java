@@ -6,9 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.springframework.security.core.GrantedAuthority;
+
 @Entity
 @Table(name = "roles", uniqueConstraints = @UniqueConstraint(columnNames = "id", name = "PK_ROLE"))
-public class Role {
+public class Role implements GrantedAuthority {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id", nullable = false)
@@ -24,6 +28,11 @@ public class Role {
 		this.id = id;
 	}
 
+	@Override
+	public String getAuthority() {
+		return role;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -64,4 +73,5 @@ public class Role {
 			return false;
 		return true;
 	}
+
 }

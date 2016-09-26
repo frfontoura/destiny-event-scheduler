@@ -18,7 +18,11 @@ public class LoginService {
 	public void login(Long membership, Platform platform, Long clanId) {
 		Member member = memberService.getByMembership(membership);
 		if(member == null){
-			memberSignUpService.signup(membership, platform, clanId);
+			try {
+				memberSignUpService.signup(membership, platform, clanId);
+			} catch (Exception e) {
+				throw new RuntimeException("Signup error.", e);
+			}
 		}
 	}
 

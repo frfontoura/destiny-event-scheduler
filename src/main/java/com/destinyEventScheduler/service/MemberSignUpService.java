@@ -14,11 +14,13 @@ import com.destinyEventScheduler.enums.Platform;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.model.Role;
 import com.destinyEventScheduler.service.bungie.BungieApiService;
+import com.destinyEventScheduler.utils.BCryptUtils;
+import com.destinyEventScheduler.utils.CipherUtils;
 
 @Service
 public class MemberSignUpService {
 
-	private static final Long ROLE_USER_ID = 1L;
+	private static final Long ROLE_USER_ID = 2L;
 	
 	@Autowired
 	private BungieApiService bungieApiService;
@@ -29,14 +31,18 @@ public class MemberSignUpService {
 	@Autowired
 	private MemberService memberService;
 	
+	@Autowired
+	private CipherUtils encryptUtils;
+	
 	@Transactional
-	public Member signup(Long membership, Platform platform, Long clanId) {
+	public Member signup(Long membership, Platform platform, Long clanId) throws Exception {
 		BungieAccountResponse bungieAccountResponse = bungieApiService.getBungieAccount(membership, platform);
 		BungieAccount bungieAccount = bungieAccountResponse.getBungieAccount();
 		if(bungieAccount != null){
 			Member member = bungieAccountAdapter.convertBungieAccont(bungieAccount, clanId);
 			setDefaultRoles(member);
-			member.setPassword("password");
+			String password = encryptUtils.encrypt(membership.toString());
+			member.setPassword(BCryptUtils.getHashedPassword(password));
 			memberService.save(member);
 			return member;
 		}

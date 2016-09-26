@@ -3,37 +3,39 @@ package com.destinyEventScheduler.configuration.security.jwt;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.destinyEventScheduler.model.Member;
+
 import java.util.Collection;
 
 public class AuthenticatedUser implements Authentication {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
 	private boolean authenticated = true;
-
-	AuthenticatedUser(String name) {
-		this.name = name;
+	private Member member;
+	
+	public AuthenticatedUser(Member member) {
+		this.member = member;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return member.getRoles();
 	}
 
 	@Override
 	public Object getCredentials() {
-		return null;
+		return "";
 	}
 
 	@Override
 	public Object getDetails() {
-		return null;
+		return "";
 	}
 
 	@Override
 	public Object getPrincipal() {
-		return null;
+		return member;
 	}
 
 	@Override
@@ -48,6 +50,6 @@ public class AuthenticatedUser implements Authentication {
 
 	@Override
 	public String getName() {
-		return this.name;
+		return this.member.getMembershipJson();
 	}
 }
