@@ -2,6 +2,7 @@ package com.destinyEventScheduler.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ public class LogAppController {
 	@Autowired
 	private LogAppService logAppService;
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
 	public Iterable<LogApp> getLogs(){
 		return logAppService.getLogs();
