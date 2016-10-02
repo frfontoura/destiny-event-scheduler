@@ -14,7 +14,7 @@ public class NoticeService {
 	@Autowired
 	private NoticeRepository noticeRepository;
 	
-	public Notice getAll(){
+	public Notice getLastNotice(){
 		return noticeRepository.findTopByOrderByIdDesc();
 	}
 

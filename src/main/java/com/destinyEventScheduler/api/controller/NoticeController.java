@@ -1,6 +1,7 @@
 package com.destinyEventScheduler.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,9 +17,10 @@ public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
-	public Notice getNotices(){
-		return noticeService.getAll();
+	public Notice getLastNotice(){
+		return noticeService.getLastNotice();
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
