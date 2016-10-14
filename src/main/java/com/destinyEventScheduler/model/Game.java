@@ -71,7 +71,7 @@ public class Game {
 
 	@Column(name = "reserved")
 	@Min(value = 0)
-	private int reserved;
+	private Integer reserved;
 	
 	@JsonIgnore
 	@OrderBy("id")
@@ -115,7 +115,10 @@ public class Game {
 	
 	@JsonGetter("available")
 	public int getAvailable(){
-		return event.getMaxGuardians() - entries.size() - reserved;
+		if(reserved != null){
+			return event.getMaxGuardians() - entries.size() - reserved;
+		}
+		return event.getMaxGuardians() - getEntries().size();
 	}
 	
 	@JsonIgnore
@@ -263,6 +266,14 @@ public class Game {
 		this.comment = comment;
 	}
 	
+	public Integer getReserved() {
+		return reserved;
+	}
+
+	public void setReserved(Integer reserved) {
+		this.reserved = reserved;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -286,14 +297,6 @@ public class Game {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	public int getReserved() {
-		return reserved;
-	}
-
-	public void setReserved(int reserved) {
-		this.reserved = reserved;
 	}
 
 }
