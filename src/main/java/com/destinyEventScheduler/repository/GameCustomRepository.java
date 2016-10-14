@@ -10,5 +10,7 @@ public interface GameCustomRepository {
 	
 	public List<Game> getGames(Member member, Status status, Boolean joined);
 	public List<Game> getGamesHistory(Member member);
+	public List<Game> getGamesDone(Member member);
 	public void updateGamesStatusWaiting();
+	
 }

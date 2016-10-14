@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.destinyEventScheduler.dto.MemberProfileDTO;
 import com.destinyEventScheduler.model.Member;
 import com.destinyEventScheduler.service.MemberService;
+import com.destinyEventScheduler.utils.SecurityUtils;
 
 @RestController
 @RequestMapping(value = "/api/member")
@@ -27,8 +27,8 @@ public class MemberController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public Member getCurrentMember(@RequestHeader("membership") Long membership){
-		return memberService.getByMembership(membership);
+	public Member getCurrentMember(){
+		return SecurityUtils.getCurrentMember();
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.POST)

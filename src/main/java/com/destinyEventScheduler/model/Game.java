@@ -68,6 +68,10 @@ public class Game {
 	
 	@Column(name = "comment", length = 60)
 	private String comment;
+
+	@Column(name = "reserved")
+	@Min(value = 0)
+	private int reserved;
 	
 	@JsonIgnore
 	@OrderBy("id")
@@ -107,6 +111,11 @@ public class Game {
 	@JsonSetter("status")
 	public void setStatusJson(Integer value){
 		this.status = Status.parse(value);
+	}
+	
+	@JsonGetter("available")
+	public int getAvailable(){
+		return event.getMaxGuardians() - entries.size() - reserved;
 	}
 	
 	@JsonIgnore
@@ -210,6 +219,7 @@ public class Game {
 		return entries;
 	}
 
+	@JsonSetter("entries")
 	public void setEntries(List<Entry> entries) {
 		this.entries = entries;
 	}
@@ -276,6 +286,14 @@ public class Game {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public int getReserved() {
+		return reserved;
+	}
+
+	public void setReserved(int reserved) {
+		this.reserved = reserved;
 	}
 
 }

@@ -19,6 +19,7 @@ import com.destinyEventScheduler.enums.Status;
 import com.destinyEventScheduler.model.Entry;
 import com.destinyEventScheduler.model.Game;
 import com.destinyEventScheduler.service.GameService;
+import com.destinyEventScheduler.utils.SecurityUtils;
 
 @RestController
 @RequestMapping(value = "/api/game")
@@ -28,30 +29,30 @@ public class GameController {
 	private GameService gameService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Game> getGames(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestParam(name ="status", required = false) Integer status, @RequestParam(name ="joined", required = false) Boolean joined){
-		return gameService.getGames(membership, Status.parse(status), joined, ZoneId.of(zoneId));
+	public List<Game> getGames(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestParam(name ="status", required = false) Integer status, @RequestParam(name ="joined", required = false) Boolean joined){
+		return gameService.getGames(SecurityUtils.getCurrentMembership(), Status.parse(status), joined, ZoneId.of(zoneId));
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Long createNewGame(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestBody Game game){
-		return gameService.createNewGame(membership, game, ZoneId.of(zoneId)).getId();
+	public Long createNewGame(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @RequestBody Game game){
+		return gameService.createNewGame(SecurityUtils.getCurrentMembership(), game, ZoneId.of(zoneId)).getId();
 	}
 	
 	@RequestMapping(value = "/history", method = RequestMethod.GET)
-	public List<Game> getGamesHistory(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId){
-		return gameService.getGamesHistory(membership, ZoneId.of(zoneId));
+	public List<Game> getGamesHistory(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId){
+		return gameService.getGamesHistory(SecurityUtils.getCurrentMembership(), ZoneId.of(zoneId));
 	}
 	
 	@RequestMapping(value = "/{gameId}/join", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void joinGame(@RequestHeader("membership") Long membership, @RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){
-		gameService.joinGame(membership, gameId, ZoneId.of(zoneId));
+	public void joinGame(@RequestHeader(value = "zoneId", defaultValue = "America/Sao_Paulo") String zoneId, @PathVariable("gameId") Long gameId){
+		gameService.joinGame(SecurityUtils.getCurrentMembership(), gameId, ZoneId.of(zoneId));
 	}
 	
 	@RequestMapping(value = "/{gameId}/leave", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void leaveGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
-		gameService.leaveGame(membership, gameId);
+	public void leaveGame(@PathVariable("gameId") Long gameId){
+		gameService.leaveGame(SecurityUtils.getCurrentMembership(), gameId);
 	}
 	
 	@RequestMapping(value = "/{gameId}/entries", method = RequestMethod.GET)
@@ -61,20 +62,19 @@ public class GameController {
 	
 	@RequestMapping(value = "/{gameId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void delete(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId){
-		gameService.delete(membership, gameId);
+	public void delete(@PathVariable("gameId") Long gameId){
+		gameService.delete(SecurityUtils.getCurrentMembership(), gameId);
 	}
 	
 	@RequestMapping(value = "/{gameId}/validate", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void validateGame(@RequestHeader("membership") Long membership, @PathVariable("gameId") Long gameId, @RequestBody ValidateDTO validateDTO){
-		gameService.validateGameAndAddEvaluations(membership, gameId, validateDTO.getEntries(), validateDTO.getEvaluations());
+	public void validateGame(@PathVariable("gameId") Long gameId, @RequestBody ValidateDTO validateDTO){
+		gameService.validateGameAndAddEvaluations(SecurityUtils.getCurrentMembership(), gameId, validateDTO.getEntries(), validateDTO.getEvaluations());
 	}
 
-	@RequestMapping(value = "/{gameId}/status/{status}", method = RequestMethod.PUT)
-	@ResponseStatus(value = HttpStatus.OK)
-	public void updateStatus(@PathVariable("gameId") Long gameId, @PathVariable("status") Integer status){
-		gameService.updateStatus(gameId, Status.parse(status));
+	@RequestMapping(value = "/done", method = RequestMethod.GET)
+	public List<Game> getGamesDone(){
+		return gameService.getGamesDone(SecurityUtils.getCurrentMember());
 	}
 
 }
