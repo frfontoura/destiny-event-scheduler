@@ -46,6 +46,18 @@ public abstract class GameExpressions {
 		return booleanBuilder;
 	}
 	
-	
+	public static BooleanBuilder evaluated(Member member, Boolean joined){
+		BooleanBuilder booleanBuilder = new BooleanBuilder();
+		QGame qGame = QGame.game;
+		BooleanExpression hasMember = qGame.evaluations.any().memberA.eq(member);
+		
+		if(Boolean.TRUE.equals(joined)){
+			booleanBuilder.and(hasMember);
+		} else if(Boolean.FALSE.equals(joined)){
+			booleanBuilder.and(hasMember.not());
+		}
+
+		return booleanBuilder;
+	}
 	
 }

@@ -17,12 +17,12 @@ public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
 	public Notice getLastNotice(){
 		return noticeService.getLastNotice();
 	}
 	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	public Long createNewNotice(@RequestBody Notice notice){
 		return noticeService.createNewNotice(notice).getId();

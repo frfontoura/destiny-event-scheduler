@@ -4,7 +4,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -42,7 +41,7 @@ public class GameService {
 	public Game createNewGame(Long membership, Game game, ZoneId zoneId) {
 		game.setCreator(new Member(membership));
 		game.setStatus(Status.NEW);
-		game.setEntries(Arrays.asList(createEntry(game.getCreator(), game, zoneId)));
+		addEntries(game, game.getCreator(), zoneId);
 		game.setTime(DateUtil.toUTC(game.getTime(), zoneId));
 		return gameRepository.save(game);
 	}
@@ -120,12 +119,8 @@ public class GameService {
 		return entries;
 	}
 
-	@Deprecated
-	@Transactional
-	public void updateStatus(Long gameId, Status status) {
-		Game game = getGameById(gameId);
-		game.setStatus(status);
-		gameRepository.save(game);
+	public List<Game> getGamesDone(Member member) {
+		return gameRepository.getGamesDone(member);
 	}
 	
 	private Entry createEntry(Member member, Game game, ZoneId zoneId){
@@ -166,4 +161,14 @@ public class GameService {
 			});
 		}
 	}
+	
+	private void addEntries(Game game, Member member, ZoneId zoneId) {
+		List<Entry> entries = new ArrayList<>();
+		entries.add(createEntry(game.getCreator(), game, zoneId));
+		for(Entry entry: game.getEntries()){
+			entries.add(createEntry(entry.getMember(), game, zoneId));
+		}
+		game.setEntries(entries);
+	}
+
 }

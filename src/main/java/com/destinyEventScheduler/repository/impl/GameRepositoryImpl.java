@@ -65,4 +65,23 @@ public class GameRepositoryImpl extends QueryDslRepositorySupport implements Gam
 				.fetch();
 	}
 
+	@Override
+	public List<Game> getGamesDone(Member member) {
+		QMember qMember = QMember.member;
+		List<Game> games = from(qGame)
+				.innerJoin(qGame.creator, qMember)
+				.where(qGame.creator.eq(member).and(qGame.status.eq(Status.WAITING)))
+				.fetch();
+		
+		List<Game> gamesNotEvaluated = from(qGame)
+			.where(qGame.status.eq(Status.VALIDATED)
+					.and(GameExpressions.joined(member, Boolean.TRUE))
+					.and(GameExpressions.evaluated(member, Boolean.FALSE)))
+			.fetch();
+		
+		games.addAll(gamesNotEvaluated);
+		
+		return games;
+	}
+
 }
